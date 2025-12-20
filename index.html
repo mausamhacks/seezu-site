@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SEEZU | Official Site</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: #ffe6f0;
+    color:#333;
+}
+
+/* Header */
+header{
+    text-align:center;
+    padding:40px 10px;
+}
+
+#logo{
+    font-size:70px;
+    font-weight:bold;
+    color:#ff4d88;
+    letter-spacing:5px;
+}
+
+/* Pet emoji */
+#pet{
+    font-size:60px;
+}
+
+/* Search bar */
+.search-box{
+    text-align:center;
+    margin:20px;
+}
+
+.search-box input{
+    width:70%;
+    padding:12px;
+    border-radius:20px;
+    border:1px solid #ff99bb;
+    outline:none;
+}
+
+/* Sections */
+section{
+    background:#fff;
+    margin:20px;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#ff4d88;
+}
+
+/* Buttons */
+.btn{
+    display:inline-block;
+    padding:12px 20px;
+    background:#ff4d88;
+    color:white;
+    text-decoration:none;
+    border-radius:20px;
+    margin:5px;
+}
+
+/* Chat box */
+#chatBox{
+    display:none;
+    margin-top:10px;
+}
+
+#chatBox textarea{
+    width:100%;
+    height:80px;
+    border-radius:10px;
+    padding:10px;
+}
+
+footer{
+    text-align:center;
+    padding:15px;
+    color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div id="logo">SEEZU</div>
+    <div id="pet">🐶</div>
+</header>
+
+<div class="search-box">
+    <input type="text" placeholder="Search here...">
+</div>
+
+<section>
+    <h2>🌸 Social Profiles</h2>
+    <a class="btn" href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
+    <a class="btn" href="#">Snapchat: yumii2025102</a>
+    <a class="btn" href="https://wa.me/91XXXXXXXXXX" target="_blank">WhatsApp</a>
+</section>
+
+<section>
+    <h2>💬 Chat Option</h2>
+    <button class="btn" onclick="openChat()">Open Chat</button>
+    <div id="chatBox">
+        <textarea placeholder="Type your message..."></textarea>
+        <br><br>
+        <button class="btn">Send</button>
+    </div>
+</section>
+
+<section>
+    <h2>🛠 Tools</h2>
+    <p>✔ Social Links <br> ✔ Chat Box <br> ✔ Search Bar <br> ✔ Light Pink Theme</p>
+</section>
+
+<footer>
+    © 2025 SEEZU | Made by Season 💖
+</footer>
+
+<script>
+function openChat(){
+    document.getElementById("chatBox").style.display="block";
+}
+</script>
+
+</body>
+</html>
