@@ -10,11 +10,17 @@
  --pink:#ff5c8d;
  --light:#eef3f9;
  --card:#ffffff;
+ --dark:#121212;
 }
 body{
  margin:0;
  font-family:Arial, sans-serif;
  background:var(--light);
+ transition:0.4s;
+}
+body.dark{
+ background:var(--dark);
+ color:#fff;
 }
 .container{
  max-width:420px;
@@ -42,6 +48,9 @@ body{
  padding:18px;
  margin:15px 0;
  box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+body.dark .card{
+ background:#1f1f1f;
 }
 .social{
  display:flex;
@@ -89,8 +98,6 @@ input,select{
  font-size:12px;
  opacity:.6;
 }
-
-/* 🔥 MESSAGE INPUT ROW */
 .msg-row{
  display:flex;
  gap:8px;
@@ -104,17 +111,24 @@ input,select{
  width:80px;
  padding:12px 0;
 }
-
-/* MUSIC */
 .music-controls button{
  width:auto;
  margin:5px;
  padding:8px 14px;
 }
+.dark-btn{
+ position:fixed;
+ top:10px;
+ left:10px;
+}
 </style>
 </head>
 
 <body>
+
+<div class="dark-btn">
+ <button onclick="toggleDark()">🌙 Mode</button>
+</div>
 
 <!-- LOGIN PAGE -->
 <div class="container" id="loginPage">
@@ -163,7 +177,6 @@ input,select{
   <div class="chat" id="chat"></div>
   <div class="typing" id="typing"></div>
 
-  <!-- ✅ INPUT + SEND SIDE BY SIDE -->
   <div class="msg-row">
     <input id="msg" placeholder="Type message">
     <button onclick="sendMsg()">Send</button>
@@ -177,7 +190,7 @@ input,select{
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-import { getDatabase, ref, push, onChildAdded, set } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 const firebaseConfig={
  apiKey:"AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
@@ -208,30 +221,42 @@ onAuthStateChanged(auth,u=>{
 window.loadChat=()=>{
  const chatRef=ref(db,"chat/"+room.value);
  chat.innerHTML="";
- onChildAdded(chatRef,s=>{
-  chat.innerHTML+=`<div class="msg">${s.val().text}<br><small>✓ Seen</small></div>`;
+ onChildAdded(chatRef,snapshot=>{
+  const data=snapshot.val();
+  chat.innerHTML+=`
+   <div class="msg">
+    <b>${data.name}</b>: ${data.text}<br>
+    <small>✓ Seen</small>
+   </div>`;
  });
 };
 
 window.sendMsg=()=>{
- if(!msg.value)return;
+ if(!msg.value) return;
  push(ref(db,"chat/"+room.value),{
-  text:msg.value,
-  uid:auth.currentUser.uid
+  name: email.value,
+  text: msg.value,
+  uid: auth.currentUser.uid
  });
  msg.value="";
 };
-
-msg.addEventListener("input",()=>{
- set(ref(db,"typing"),{user:"typing"});
- typing.innerText="Typing...";
- setTimeout(()=>typing.innerText="",1000);
-});
 
 window.toggleMood=()=>{
  document.body.style.background =
  document.body.style.background=="rgb(238, 243, 249)" ? "#ffe6ef" : "#eef3f9";
 };
+
+window.toggleDark=()=>{
+ document.body.classList.toggle("dark");
+ localStorage.setItem(
+  "dark",
+  document.body.classList.contains("dark") ? "on" : "off"
+ );
+};
+
+if(localStorage.getItem("dark")==="on"){
+ document.body.classList.add("dark");
+}
 </script>
 
 </body>
