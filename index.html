@@ -58,14 +58,13 @@ body{
  font-size:14px;
 }
 button{
- width:100%;
  padding:14px;
  border:none;
  border-radius:25px;
  background:var(--pink);
  color:#fff;
  font-size:16px;
- margin-top:10px;
+ cursor:pointer;
 }
 input,select{
  width:100%;
@@ -90,6 +89,23 @@ input,select{
  font-size:12px;
  opacity:.6;
 }
+
+/* 🔥 MESSAGE INPUT ROW */
+.msg-row{
+ display:flex;
+ gap:8px;
+ align-items:center;
+}
+.msg-row input{
+ flex:1;
+ margin:0;
+}
+.msg-row button{
+ width:80px;
+ padding:12px 0;
+}
+
+/* MUSIC */
 .music-controls button{
  width:auto;
  margin:5px;
@@ -107,8 +123,8 @@ input,select{
  <div class="card">
   <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="signup()">Signup</button>
+  <button onclick="login()" style="width:100%">Login</button>
+  <button onclick="signup()" style="width:100%;margin-top:8px">Signup</button>
  </div>
 </div>
 
@@ -125,7 +141,7 @@ input,select{
 
  <div class="card">
   <h3>Mood</h3>
-  <button onclick="toggleMood()">Change Mood</button>
+  <button style="width:100%" onclick="toggleMood()">Change Mood</button>
  </div>
 
  <div class="card">
@@ -139,17 +155,22 @@ input,select{
 
  <div class="card">
   <h3>Live Chat</h3>
-  <select id="room">
+  <select id="room" onchange="loadChat()">
    <option value="public">Public Chat</option>
    <option value="private">Private Chat</option>
   </select>
+
   <div class="chat" id="chat"></div>
   <div class="typing" id="typing"></div>
-  <input id="msg" placeholder="Type message">
-  <button onclick="sendMsg()">Send</button>
+
+  <!-- ✅ INPUT + SEND SIDE BY SIDE -->
+  <div class="msg-row">
+    <input id="msg" placeholder="Type message">
+    <button onclick="sendMsg()">Send</button>
+  </div>
  </div>
 
- <button onclick="logout()">Logout</button>
+ <button style="width:100%" onclick="logout()">Logout</button>
 </div>
 
 <!-- FIREBASE -->
@@ -184,13 +205,13 @@ onAuthStateChanged(auth,u=>{
  }
 });
 
-function loadChat(){
+window.loadChat=()=>{
  const chatRef=ref(db,"chat/"+room.value);
  chat.innerHTML="";
  onChildAdded(chatRef,s=>{
   chat.innerHTML+=`<div class="msg">${s.val().text}<br><small>✓ Seen</small></div>`;
  });
-}
+};
 
 window.sendMsg=()=>{
  if(!msg.value)return;
@@ -202,7 +223,7 @@ window.sendMsg=()=>{
 };
 
 msg.addEventListener("input",()=>{
- set(ref(db,"typing"),{user:"typing..."});
+ set(ref(db,"typing"),{user:"typing"});
  typing.innerText="Typing...";
  setTimeout(()=>typing.innerText="",1000);
 });
