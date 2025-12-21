@@ -6,192 +6,241 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{box-sizing:border-box}
+:root{
+  --pink:#ff5c8d;
+  --light:#ffe6ef;
+  --white:#ffffff;
+  --dark:#121212;
+}
 
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background:#ffe6f0;
-  color:#333;
-  transition:0.3s;
+  background:var(--light);
+  transition:0.4s;
 }
 
-/* Dark Mode */
-.dark{
-  background:#121212;
+body.dark{
+  background:var(--dark);
   color:#fff;
 }
-.dark section{
-  background:#1f1f1f;
+
+/* Loader */
+#loader{
+  position:fixed;
+  inset:0;
+  background:var(--light);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  z-index:999;
 }
 
-/* Header */
-header{
+/* Dark button */
+.dark-btn{
+  position:fixed;
+  top:10px;
+  left:10px;
+  z-index:100;
+}
+
+/* Music button */
+.music-btn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  z-index:100;
+}
+
+/* Layout */
+.container{
+  max-width:420px;
+  margin:auto;
+  padding:20px;
   text-align:center;
-  padding:30px 10px;
 }
+
+/* Logo */
 #logo{
-  font-size:56px;
+  font-size:60px;
   font-weight:bold;
-  color:#ff4d88;
+  color:var(--pink);
+  letter-spacing:5px;
+  margin-top:40px;
 }
 
-/* Girl Image */
+/* Girl image */
 #girl{
-  width:150px;
-  max-width:70%;
-  margin:15px auto;
+  width:260px;
+  margin:20px auto;
   display:block;
-  animation:bounce 2s infinite;
-  filter: drop-shadow(0 8px 15px rgba(0,0,0,0.25));
-}
-
-@keyframes bounce{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-10px)}
-}
-
-/* Button */
-.btn{
-  display:inline-block;
-  padding:12px 22px;
-  border:none;
-  border-radius:25px;
-  background:#ff4d88;
-  color:#fff;
+  border-radius:30px;
   cursor:pointer;
-  margin:8px 5px;
-  font-size:15px;
+  animation:float 3s ease-in-out infinite;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-12px);}
+}
+
+/* Heart */
+.heart{
+  position:fixed;
+  font-size:24px;
+  animation:fly 1.2s linear forwards;
+}
+
+@keyframes fly{
+  from{opacity:1;transform:translateY(0);}
+  to{opacity:0;transform:translateY(-100px);}
+}
+
+/* Buttons */
+button{
+  background:var(--pink);
+  color:#fff;
+  border:none;
+  padding:12px 22px;
+  border-radius:30px;
+  cursor:pointer;
+  font-size:16px;
 }
 
 /* Search */
-.search-box{
-  padding:10px 15px;
-  text-align:center;
-}
-.search-box input{
+.search{
   width:100%;
-  max-width:400px;
   padding:14px;
-  border-radius:25px;
-  border:1px solid #ff99bb;
-  outline:none;
+  border-radius:30px;
+  border:1px solid #ccc;
+  margin:20px 0;
 }
 
-/* Sections */
-section{
-  background:#fff;
-  margin:18px;
-  padding:22px;
+/* Cards */
+.card{
+  background:var(--white);
   border-radius:22px;
+  padding:20px;
+  margin-bottom:20px;
   box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
-h2{
-  color:#ff4d88;
-  margin-bottom:15px;
+
+body.dark .card{
+  background:#1f1f1f;
 }
 
-/* Social buttons */
-.social{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-/* Chat */
-#chatBox{
-  display:none;
-  margin-top:15px;
-}
-#chatBox textarea{
-  width:100%;
-  height:90px;
-  padding:12px;
-  border-radius:12px;
-  border:1px solid #ff99bb;
-}
-
-/* Contact */
-.contact input,
-.contact textarea{
-  width:100%;
+/* Social */
+.social a{
+  display:block;
+  text-decoration:none;
+  background:var(--pink);
+  color:#fff;
   padding:14px;
-  margin-bottom:12px;
-  border-radius:20px;
-  border:1px solid #ff99bb;
+  border-radius:30px;
+  margin:10px 0;
 }
 
-/* Footer */
+/* Form */
+input,textarea{
+  width:100%;
+  padding:12px;
+  border-radius:20px;
+  border:none;
+  margin:10px 0;
+}
+
 footer{
-  text-align:center;
-  padding:18px;
   font-size:14px;
-  color:#777;
+  opacity:0.7;
 }
 </style>
 </head>
 
 <body>
 
-<header>
+<div id="loader">Welcome 💖</div>
+
+<div class="dark-btn">
+  <button onclick="toggleDark()">🌙 Mode</button>
+</div>
+
+<div class="music-btn">
+  <button onclick="toggleMusic()">🎵</button>
+</div>
+
+<audio id="bgm" loop>
+  <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Kevin_MacLeod/Classical_Sampler/Kevin_MacLeod_-_Carefree.mp3">
+</audio>
+
+<div class="container">
+
   <div id="logo">SEEZU</div>
 
-  <!-- Anime Girl -->
-  <img src="girl.png" id="girl" alt="Cute Anime Girl">
+  <img src="girl.jpg" id="girl" onclick="love()" alt="Anime Girl">
 
-  <button class="btn" onclick="toggleDark()">🌙 Dark Mode</button>
-</header>
+  <input class="search" placeholder="Search here...">
 
-<div class="search-box">
-  <input type="text" placeholder="Search here..." onkeyup="searchContent(this.value)">
+  <div class="card">
+    <h2>🌸 Social Profiles</h2>
+    <div class="social">
+      <a href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
+      <a>Snapchat: yumii2025102</a>
+      <a href="https://wa.me/" target="_blank">WhatsApp</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💬 Chat (Demo)</h2>
+    <button onclick="alert('Chat demo 😊')">Open Chat</button>
+  </div>
+
+  <div class="card">
+    <h2>📩 Contact Me</h2>
+    <input placeholder="Your Name">
+    <input placeholder="Your Email">
+    <textarea rows="3" placeholder="Message"></textarea>
+    <button onclick="alert('Message sent 💖')">Send</button>
+  </div>
+
+  <footer>© 2025 SEEZU • Made with 💗</footer>
+
 </div>
-
-<section class="content">
-<h2>🌸 Social Profiles</h2>
-<div class="social">
-  <a class="btn" href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
-  <div class="btn">Snapchat: yumii2025102</div>
-  <a class="btn" href="https://wa.me/91XXXXXXXXXX" target="_blank">WhatsApp</a>
-</div>
-</section>
-
-<section class="content">
-<h2>💬 Chat (Demo)</h2>
-<button class="btn" onclick="openChat()">Open Chat</button>
-<div id="chatBox">
-  <textarea placeholder="Type your message..."></textarea>
-  <button class="btn">Send</button>
-</div>
-</section>
-
-<section class="content contact">
-<h2>📩 Contact Me</h2>
-<input type="text" placeholder="Your Name">
-<input type="email" placeholder="Your Email">
-<textarea placeholder="Message"></textarea>
-<button class="btn">Send</button>
-</section>
-
-<footer>
-© 2025 SEEZU | Built by Season 💖
-</footer>
 
 <script>
+/* Loader */
+setTimeout(()=>loader.style.display="none",1200);
+
+/* Dark mode remember */
+if(localStorage.getItem("dark")==="on"){
+  document.body.classList.add("dark");
+}
 function toggleDark(){
   document.body.classList.toggle("dark");
+  localStorage.setItem("dark",
+    document.body.classList.contains("dark")?"on":"off");
 }
 
-function openChat(){
-  document.getElementById("chatBox").style.display="block";
+/* Hearts */
+function love(){
+  for(let i=0;i<5;i++){
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"%";
+    h.style.top="60%";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1200);
+  }
 }
 
-function searchContent(val){
-  document.querySelectorAll(".content").forEach(sec=>{
-    sec.style.display =
-      sec.innerText.toLowerCase().includes(val.toLowerCase())
-      ? "block"
-      : "none";
-  });
+/* Music */
+let playing=false;
+function toggleMusic(){
+  let m=document.getElementById("bgm");
+  playing ? m.pause() : m.play();
+  playing=!playing;
 }
 </script>
 
