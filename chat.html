@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chat | SEEZU</title>
+<meta name="viewport" content="width=device-width">
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
+  databaseURL:"https://seezu-1066d-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.sendMsg = ()=>{
+  push(ref(db,"public"),{msg:msg.value});
+  msg.value="";
+}
+
+onChildAdded(ref(db,"public"),snap=>{
+  box.innerHTML += `<div class="m">${snap.val().msg}</div>`;
+});
+</script>
+
+<style>
+body{background:#ffe6ef;font-family:Arial}
+.chat{
+  max-width:420px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:20px;
+}
+.m{
+  background:#ffb3c7;
+  padding:10px;
+  border-radius:15px;
+  margin:8px 0;
+}
+</style>
+</head>
+
+<body>
+<div class="chat">
+  <h3>Live Chat</h3>
+  <div id="box"></div>
+  <input id="msg" placeholder="Type message">
+  <button onclick="sendMsg()">Send</button>
+  <br><br>
+  <button onclick="location.href='private.html'">Private Chat</button>
+</div>
+</body>
+</html>
