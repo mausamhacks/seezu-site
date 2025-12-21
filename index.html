@@ -2,197 +2,156 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEEZU</title>
-
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root{
-  --bg:#ffe6ef;
-  --card:#ffffff;
-  --pink:#ff4f8b;
-  --text:#222;
-}
-.dark{
-  --bg:#1c1c1c;
-  --card:#2a2a2a;
-  --pink:#ff4f8b;
-  --text:#fff;
-}
-*{box-sizing:border-box;font-family:Poppins}
 body{
   margin:0;
-  background:var(--bg);
-  color:var(--text);
-  display:flex;
-  justify-content:center;
+  font-family:Arial;
+  background:#ffe6ef;
+  text-align:center;
 }
-.container{
-  width:100%;
-  max-width:420px;
-  padding:15px;
-}
-h1{text-align:center;color:var(--pink)}
+.hidden{display:none}
+h1{color:#ff5c8d;font-size:48px}
 .card{
-  background:var(--card);
-  border-radius:20px;
-  padding:15px;
-  margin-top:15px;
-  box-shadow:0 10px 30px rgba(0,0,0,.1);
+  background:#fff;
+  margin:20px;
+  padding:20px;
+  border-radius:25px;
 }
-.center{text-align:center}
-img{
-  width:200px;
+input,button{
+  width:90%;
+  padding:12px;
+  margin:6px;
   border-radius:20px;
-  animation:pop 1s ease;
-}
-@keyframes pop{
-  0%{transform:scale(.7);opacity:0}
-  100%{transform:scale(1);opacity:1}
+  border:none;
 }
 button{
-  background:var(--pink);
+  background:#ff5c8d;
   color:white;
-  border:none;
-  padding:12px;
-  border-radius:30px;
-  cursor:pointer;
-}
-input{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:30px;
-  border:1px solid #ccc;
-}
-.chat-box{
-  max-height:300px;
-  overflow:auto;
+  font-size:16px;
 }
 .msg{
   background:#ffb3cc;
   padding:10px;
-  border-radius:20px;
-  margin:8px 0;
+  margin:5px;
+  border-radius:15px;
 }
-.row{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
+img{
+  width:240px;
+  border-radius:30px;
+  animation:float 3s infinite;
 }
-.toggle{
-  display:flex;
-  justify-content:space-between;
-  margin-top:10px;
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
 }
 </style>
 </head>
 
 <body>
-<div class="container">
+
+<!-- HOME -->
+<div id="home">
   <h1>SEEZU</h1>
-
-  <!-- Girl Image -->
-  <div class="center">
-    <img src="girl.jpg" alt="girl">
-  </div>
-
-  <!-- Mood + Music -->
-  <div class="card toggle">
-    <button onclick="toggleMood()">🌙 Mood</button>
-    <button onclick="toggleMusic()">🎵 Music</button>
-  </div>
-
-  <!-- Login -->
-  <div class="card" id="authBox">
-    <h3>Login / Signup</h3>
-    <input id="email" placeholder="username@seezu.com">
-    <input id="password" type="password" placeholder="Password (6+)">
-    <button style="width:100%;margin-top:10px" onclick="login()">Enter</button>
-  </div>
-
-  <!-- Chat -->
-  <div class="card" id="chatBox" style="display:none">
-    <h3>Live Chat</h3>
-    <div class="chat-box" id="messages"></div>
-    <div class="row">
-      <input id="msg" placeholder="Type message">
-      <button onclick="send()">Send</button>
-    </div>
-    <button style="width:100%;margin-top:10px" onclick="logout()">Logout</button>
-  </div>
+  <img src="girl.jpg">
+  <button onclick="show('login')">Login / Signup</button>
 </div>
 
-<!-- Music -->
-<audio id="bgm" loop>
-  <source src="music.mp3" type="audio/mp3">
+<!-- LOGIN -->
+<div id="login" class="hidden card">
+  <h2>Login / Signup</h2>
+  <input id="email" placeholder="Email">
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- CHAT -->
+<div id="chat" class="hidden card">
+  <h2>Live Chat</h2>
+  <div id="messages"></div>
+  <input id="msg" placeholder="Type message">
+  <button onclick="sendMsg()">Send</button>
+  <button onclick="logout()">Logout</button>
+  <button onclick="toggleMusic()">Mood / Music</button>
+</div>
+
+<audio id="music" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
 </audio>
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut }
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase,ref,push,onValue,remove }
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
   authDomain: "seezu-1066d.firebaseapp.com",
   databaseURL: "https://seezu-1066d-default-rtdb.firebaseio.com",
-  projectId: "seezu-1066d",
-  storageBucket: "seezu-1066d.appspot.com",
-  messagingSenderId: "783067066542",
-  appId: "1:783067066542:web:70c23adf7372b259a6fd3f"
-};
+  projectId: "seezu-1066d"
+});
 
-const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-window.login = async()=>{
-  const e=email.value, p=password.value;
-  try{
-    await signInWithEmailAndPassword(auth,e,p);
-  }catch{
-    await createUserWithEmailAndPassword(auth,e,p);
-  }
-}
+window.show = id=>{
+  ["home","login","chat"].forEach(x=>document.getElementById(x).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+};
 
-onAuthStateChanged(auth,user=>{
-  if(user){
-    authBox.style.display="none";
-    chatBox.style.display="block";
-    loadChat();
-  }
+window.signup=()=>{
+  createUserWithEmailAndPassword(auth,email.value,pass.value)
+  .then(()=>show("chat"))
+  .catch(e=>alert(e.message));
+};
+
+window.login=()=>{
+  signInWithEmailAndPassword(auth,email.value,pass.value)
+  .then(()=>show("chat"))
+  .catch(e=>alert(e.message));
+};
+
+window.logout=()=>signOut(auth).then(()=>show("home"));
+
+const chatRef = ref(db,"chat");
+window.sendMsg=()=>{
+  push(chatRef,{
+    text:msg.value,
+    uid:auth.currentUser.uid
+  });
+  msg.value="";
+};
+
+onValue(chatRef,snap=>{
+  messages.innerHTML="";
+  snap.forEach(s=>{
+    let d=s.val();
+    let div=document.createElement("div");
+    div.className="msg";
+    div.innerText=d.text;
+    if(d.uid===auth.currentUser?.uid){
+      div.onclick=()=>remove(ref(db,"chat/"+s.key));
+    }
+    messages.appendChild(div);
+  });
 });
 
-function loadChat(){
-  const chatRef = ref(db,"chat");
-  onChildAdded(chatRef,snap=>{
-    const d=snap.val();
-    messages.innerHTML += `<div class="msg">${d.text}</div>`;
-    messages.scrollTop=messages.scrollHeight;
-  });
-}
+let playing=false;
+window.toggleMusic=()=>{
+  let m=document.getElementById("music");
+  playing?m.pause():m.play();
+  playing=!playing;
+};
 
-window.send=()=>{
-  if(msg.value.trim()=="")return;
-  push(ref(db,"chat"),{text:msg.value});
-  msg.value="";
-}
-
-window.logout=()=>signOut(auth);
+onAuthStateChanged(auth,u=>{
+  if(u) show("chat");
+});
 </script>
 
-<script>
-function toggleMood(){
-  document.body.classList.toggle("dark");
-}
-function toggleMusic(){
-  const m=document.getElementById("bgm");
-  m.paused ? m.play() : m.pause();
-}
-</script>
 </body>
 </html>
