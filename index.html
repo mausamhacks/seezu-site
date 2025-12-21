@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SEEZU</title>
+<title>SEEZU | Official Site</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -13,142 +13,207 @@
 }
 body{
   margin:0;
-  font-family:Arial,sans-serif;
+  font-family: Arial, sans-serif;
   background:var(--light);
+  transition:0.4s;
+}
+body.dark{
+  background:#121212;
+  color:#fff;
+}
+.dark-btn{
+  position:fixed;
+  top:10px;
+  left:10px;
+  z-index:100;
 }
 .container{
   max-width:420px;
   margin:auto;
-  padding:15px;
-}
-.logo{
+  padding:20px;
   text-align:center;
-  font-size:42px;
-  color:var(--pink);
+}
+#logo{
+  font-size:60px;
   font-weight:bold;
+  color:var(--pink);
+  letter-spacing:5px;
+  margin-top:30px;
 }
-.top{
-  text-align:center;
-}
-.girl{
-  width:230px;
-  border-radius:25px;
+#girl{
+  width:260px;
+  margin:20px auto;
+  display:block;
+  border-radius:30px;
   animation:float 3s ease-in-out infinite;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 @keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-10px)}
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-12px);}
 }
 button{
-  width:100%;
   background:var(--pink);
   color:#fff;
   border:none;
+  padding:12px 22px;
+  border-radius:30px;
+  cursor:pointer;
+  font-size:16px;
+}
+.search{
+  width:100%;
   padding:14px;
   border-radius:30px;
-  font-size:16px;
-  margin:6px 0;
+  border:1px solid #ccc;
+  margin:20px 0;
 }
 .card{
-  background:#fff;
+  background:var(--white);
   border-radius:22px;
-  padding:15px;
-  margin-top:15px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
+body.dark .card{
+  background:#1f1f1f;
+}
+.social a{
+  display:block;
+  text-decoration:none;
+  background:var(--pink);
+  color:#fff;
+  padding:14px;
+  border-radius:30px;
+  margin:10px 0;
+}
+input, textarea{
+  width:100%;
+  padding:12px;
+  border-radius:20px;
+  border:none;
+  margin:10px 0;
+}
+
+/* CHAT */
 .chat-box{
-  max-height:280px;
-  overflow-y:auto;
-  margin-bottom:10px;
+  max-height:250px;
+  overflow:auto;
+  text-align:left;
 }
 .msg{
   background:#ffb3cc;
-  padding:10px 14px;
-  margin:6px 0;
-  border-radius:20px;
+  padding:10px;
+  border-radius:15px;
+  margin:8px 0;
 }
-input{
-  width:100%;
-  padding:12px;
-  border-radius:25px;
-  border:1px solid #ccc;
+.msg button{
+  font-size:12px;
+  padding:4px 10px;
+  margin-left:5px;
 }
-.hidden{display:none}
+
+footer{
+  font-size:14px;
+  opacity:0.7;
+}
 </style>
 </head>
 
 <body>
+
+<div class="dark-btn">
+  <button onclick="toggleDark()">🌙 Dark Mode</button>
+</div>
+
 <div class="container">
 
-<div class="top">
-  <div class="logo">SEEZU</div>
-  <img src="girl.jpg" class="girl">
-  <button onclick="toggleMood()">🎵 Mood / Music</button>
+  <div id="logo">SEEZU</div>
+
+  <img src="girl.jpg" id="girl" alt="Cute Anime Girl">
+
+  <input class="search" type="text" placeholder="Search here...">
+
+  <div class="card">
+    <h2>🌸 Social Profiles</h2>
+    <div class="social">
+      <a href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
+      <a href="#">Snapchat: yumii2025102</a>
+      <a href="https://wa.me/" target="_blank">WhatsApp</a>
+    </div>
+  </div>
+
+  <!-- REAL CHAT -->
+  <div class="card">
+    <h2>💬 Live Chat</h2>
+    <div class="chat-box" id="chat"></div>
+    <input id="msgInput" placeholder="Type message">
+    <button onclick="sendMsg()">Send</button>
+  </div>
+
+  <div class="card">
+    <h2>📩 Contact Me</h2>
+    <input type="text" placeholder="Your Name">
+    <input type="email" placeholder="Your Email">
+    <textarea rows="3" placeholder="Message"></textarea>
+    <button>Send</button>
+  </div>
+
+  <footer>© 2025 SEEZU • Made with 💗</footer>
+
 </div>
 
-<div id="loginCard" class="card">
-  <h3>Login / Signup</h3>
-  <input id="email" placeholder="Email">
-  <input id="pass" type="password" placeholder="Password">
-  <button onclick="login()">Login / Signup</button>
-</div>
-
-<div id="chatCard" class="card hidden">
-  <h3>Live Chat</h3>
-  <div class="chat-box" id="messages"></div>
-  <input id="msg" placeholder="Type message">
-  <button onclick="send()">Send</button>
-  <button onclick="logout()">Logout</button>
-</div>
-
-</div>
-
+<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-import { getDatabase,ref,push,onChildAdded } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, ref, push, onChildAdded, remove, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
-const firebaseConfig={
- apiKey:"AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
- authDomain:"seezu-1066d.firebaseapp.com",
- databaseURL:"https://seezu-1066d-default-rtdb.firebaseio.com",
- projectId:"seezu-1066d",
- storageBucket:"seezu-1066d.appspot.com",
- messagingSenderId:"783067066542",
- appId:"1:783067066542:web:70c23adf7372b259a6fd3f"
+const firebaseConfig = {
+  apiKey: "AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
+  authDomain: "seezu-1066d.firebaseapp.com",
+  databaseURL: "https://seezu-1066d-default-rtdb.firebaseio.com",
+  projectId: "seezu-1066d",
 };
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const chatRef = ref(db,"messages");
 
-window.login=()=>{
- const e=email.value,p=pass.value;
- signInWithEmailAndPassword(auth,e,p)
- .catch(()=>createUserWithEmailAndPassword(auth,e,p));
+window.sendMsg = ()=>{
+  if(msgInput.value.trim()=="") return;
+  push(chatRef,{ text: msgInput.value });
+  msgInput.value="";
 };
 
-onAuthStateChanged(auth,u=>{
- if(u){
-  loginCard.classList.add("hidden");
-  chatCard.classList.remove("hidden");
- }
+onChildAdded(chatRef,snap=>{
+  const id = snap.key;
+  const data = snap.val();
+  chat.innerHTML += `
+    <div class="msg" id="${id}">
+      <span>${data.text}</span><br>
+      <button onclick="editMsg('${id}','${data.text}')">Edit</button>
+      <button onclick="delMsg('${id}')">Delete</button>
+    </div>`;
 });
 
-window.send=()=>{
- push(ref(db,"chat"),{text:msg.value});
- msg.value="";
+window.delMsg = id =>{
+  remove(ref(db,"messages/"+id));
+  document.getElementById(id).remove();
 };
 
-onChildAdded(ref(db,"chat"),s=>{
- const d=document.createElement("div");
- d.className="msg";
- d.innerText=s.val().text;
- messages.appendChild(d);
-});
+window.editMsg = (id,text)=>{
+  const n = prompt("Edit message",text);
+  if(n){
+    update(ref(db,"messages/"+id),{text:n});
+    document.querySelector("#"+id+" span").innerText=n;
+  }
+};
+</script>
 
-window.logout=()=>signOut(auth);
-
-window.toggleMood=()=>alert("Mood / Music ON");
+<script>
+function toggleDark(){
+  document.body.classList.toggle("dark");
+}
 </script>
 
 </body>
