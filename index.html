@@ -6,130 +6,190 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+/* RESET */
+*{box-sizing:border-box;}
 body{
-    margin:0;
-    font-family: Arial, sans-serif;
-    background: #ffe6f0;
-    color:#333;
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#ffe6f0;
+  color:#333;
+  transition:0.3s;
+}
+.dark{
+  background:#121212;
+  color:#fff;
+}
+.dark section{background:#1f1f1f;}
+
+/* LOADER */
+#loader{
+  position:fixed;
+  inset:0;
+  background:#ffe6f0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+#loader h1{
+  color:#ff4d88;
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;}
+  50%{opacity:0.4;}
 }
 
-/* Header */
+/* HEADER */
 header{
-    text-align:center;
-    padding:40px 10px;
+  text-align:center;
+  padding:40px 10px;
 }
-
 #logo{
-    font-size:70px;
-    font-weight:bold;
-    color:#ff4d88;
-    letter-spacing:5px;
+  font-size:70px;
+  font-weight:bold;
+  color:#ff4d88;
 }
-
-/* Pet emoji */
 #pet{
-    font-size:60px;
+  font-size:60px;
+  animation:bounce 2s infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-12px);}
 }
 
-/* Search bar */
-.search-box{
-    text-align:center;
-    margin:20px;
-}
-
-.search-box input{
-    width:70%;
-    padding:12px;
-    border-radius:20px;
-    border:1px solid #ff99bb;
-    outline:none;
-}
-
-/* Sections */
-section{
-    background:#fff;
-    margin:20px;
-    padding:20px;
-    border-radius:20px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
-
-h2{
-    color:#ff4d88;
-}
-
-/* Buttons */
+/* BUTTON */
 .btn{
-    display:inline-block;
-    padding:12px 20px;
-    background:#ff4d88;
-    color:white;
-    text-decoration:none;
-    border-radius:20px;
-    margin:5px;
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:#ff4d88;
+  color:#fff;
+  cursor:pointer;
+  margin:5px;
 }
 
-/* Chat box */
-#chatBox{
-    display:none;
-    margin-top:10px;
+/* SEARCH */
+.search-box{text-align:center;margin:20px;}
+.search-box input{
+  width:70%;
+  padding:12px;
+  border-radius:20px;
+  border:1px solid #ff99bb;
 }
 
+/* SECTIONS */
+section{
+  background:#fff;
+  margin:20px;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 0 10px rgba(0,0,0,0.1);
+  animation:fade 1s ease;
+}
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+h2{color:#ff4d88;}
+
+/* CHAT */
+#chatBox{display:none;}
 #chatBox textarea{
-    width:100%;
-    height:80px;
-    border-radius:10px;
-    padding:10px;
+  width:100%;
+  height:80px;
+  border-radius:10px;
+  padding:10px;
 }
 
+/* FOOTER */
 footer{
-    text-align:center;
-    padding:15px;
-    color:#777;
+  text-align:center;
+  padding:15px;
+  color:#777;
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOADER -->
+<div id="loader"><h1>SEEZU</h1></div>
+
 <header>
-    <div id="logo">SEEZU</div>
-    <div id="pet">🐶</div>
+  <div id="logo">SEEZU</div>
+  <div id="pet">🐶</div>
+  <button class="btn" onclick="toggleDark()">🌙 Dark Mode</button>
 </header>
 
 <div class="search-box">
-    <input type="text" placeholder="Search here...">
+  <input type="text" placeholder="Search here..." onkeyup="searchContent(this.value)">
 </div>
 
-<section>
-    <h2>🌸 Social Profiles</h2>
-    <a class="btn" href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
-    <a class="btn" href="#">Snapchat: yumii2025102</a>
-    <a class="btn" href="https://wa.me/91XXXXXXXXXX" target="_blank">WhatsApp</a>
+<section class="content">
+<h2>🌸 Social Profiles</h2>
+<a class="btn" href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
+<a class="btn">Snapchat: yumii2025102</a>
+<a class="btn" href="https://wa.me/91XXXXXXXXXX" target="_blank">WhatsApp</a>
 </section>
 
-<section>
-    <h2>💬 Chat Option</h2>
-    <button class="btn" onclick="openChat()">Open Chat</button>
-    <div id="chatBox">
-        <textarea placeholder="Type your message..."></textarea>
-        <br><br>
-        <button class="btn">Send</button>
-    </div>
+<section class="content">
+<h2>💬 Chat (Demo)</h2>
+<button class="btn" onclick="openChat()">Open Chat</button>
+<div id="chatBox">
+<textarea placeholder="Type your message..."></textarea><br><br>
+<button class="btn">Send</button>
+</div>
 </section>
 
-<section>
-    <h2>🛠 Tools</h2>
-    <p>✔ Social Links <br> ✔ Chat Box <br> ✔ Search Bar <br> ✔ Light Pink Theme</p>
+<section class="content">
+<h2>📩 Contact Me</h2>
+<form action="mailto:yourmail@gmail.com" method="post" enctype="text/plain">
+<input class="btn" type="text" placeholder="Your Name"><br><br>
+<input class="btn" type="email" placeholder="Your Email"><br><br>
+<textarea class="btn" placeholder="Message"></textarea><br><br>
+<button class="btn">Send</button>
+</form>
+</section>
+
+<section class="content">
+<h2>🛠 Features</h2>
+<p>
+✔ Dark Mode<br>
+✔ Loading Screen<br>
+✔ Animation<br>
+✔ Pet Animation<br>
+✔ Search System<br>
+✔ WhatsApp Chat<br>
+✔ Contact Form<br>
+✔ Responsive Design
+</p>
 </section>
 
 <footer>
-    © 2025 SEEZU | Made by Season 💖
+© 2025 SEEZU | Built by Season 💖
 </footer>
 
 <script>
+/* LOADER */
+window.onload=()=>{setTimeout(()=>{loader.style.display="none"},1200);}
+
+/* DARK MODE */
+function toggleDark(){
+  document.body.classList.toggle("dark");
+}
+
+/* CHAT */
 function openChat(){
-    document.getElementById("chatBox").style.display="block";
+  document.getElementById("chatBox").style.display="block";
+}
+
+/* SEARCH */
+function searchContent(val){
+  document.querySelectorAll(".content").forEach(s=>{
+    s.style.display=s.innerText.toLowerCase().includes(val.toLowerCase())?"block":"none";
+  });
 }
 </script>
 
