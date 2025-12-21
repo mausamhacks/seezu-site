@@ -7,208 +7,210 @@
 
 <style>
 :root{
-  --pink:#ff5c8d;
-  --light:#f2f6fb;
-  --white:#ffffff;
+ --pink:#ff5c8d;
+ --light:#eef3f9;
+ --card:#ffffff;
 }
 body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:var(--light);
+ margin:0;
+ font-family:Arial, sans-serif;
+ background:var(--light);
 }
-.hidden{display:none;}
-
 .container{
-  max-width:420px;
-  margin:auto;
-  padding:20px;
-  text-align:center;
+ max-width:420px;
+ margin:auto;
+ padding:20px;
+ text-align:center;
 }
-
-/* LOGO */
-#logo{
-  font-size:48px;
-  font-weight:bold;
-  color:var(--pink);
-  margin:20px 0;
+.hidden{display:none}
+.logo{
+ font-size:48px;
+ font-weight:bold;
+ color:var(--pink);
+ margin:20px 0;
 }
-
-/* GIRL IMAGE */
 .girl{
-  width:260px;
-  border-radius:25px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+ width:240px;
+ border-radius:25px;
+ box-shadow:0 10px 25px rgba(0,0,0,.2);
+ margin:15px auto;
+ display:block;
 }
-
-/* CARD */
 .card{
-  background:var(--white);
-  border-radius:25px;
-  padding:20px;
-  margin:18px 0;
+ background:var(--card);
+ border-radius:25px;
+ padding:18px;
+ margin:15px 0;
+ box-shadow:0 5px 15px rgba(0,0,0,.1);
 }
-
-/* INPUT */
-input{
-  width:100%;
-  padding:14px;
-  border-radius:30px;
-  border:1px solid #ddd;
-  margin:10px 0;
-}
-
-/* BUTTON */
-button{
-  width:100%;
-  padding:14px;
-  border-radius:30px;
-  border:none;
-  background:var(--pink);
-  color:#fff;
-  font-size:16px;
-  margin:8px 0;
-}
-
-/* SOCIAL */
 .social{
-  display:flex;
-  gap:10px;
-  justify-content:center;
+ display:flex;
+ gap:10px;
+ justify-content:center;
 }
 .social a{
-  flex:1;
-  text-decoration:none;
-  background:var(--pink);
-  color:#fff;
-  padding:12px;
-  border-radius:30px;
-  font-size:14px;
+ flex:1;
+ background:var(--pink);
+ color:#fff;
+ padding:12px;
+ border-radius:25px;
+ text-decoration:none;
+ font-size:14px;
 }
-
-/* MOOD / MUSIC */
-.row{
-  display:flex;
-  gap:15px;
+button{
+ width:100%;
+ padding:14px;
+ border:none;
+ border-radius:25px;
+ background:var(--pink);
+ color:#fff;
+ font-size:16px;
+ margin-top:10px;
 }
-.small-card{
-  flex:1;
-  padding:18px;
-  border-radius:20px;
-  background:var(--white);
+input,select{
+ width:100%;
+ padding:12px;
+ border-radius:20px;
+ border:1px solid #ccc;
+ margin:8px 0;
 }
-
-/* CHAT */
 .chat{
-  max-height:160px;
-  overflow:auto;
-  text-align:left;
+ max-height:220px;
+ overflow:auto;
+ text-align:left;
 }
 .msg{
-  background:#ffd1e1;
-  padding:10px;
-  border-radius:15px;
-  margin:6px 0;
+ background:#ffc1d6;
+ padding:10px;
+ border-radius:15px;
+ margin:6px 0;
+ font-size:14px;
+}
+.typing{
+ font-size:12px;
+ opacity:.6;
+}
+.music-controls button{
+ width:auto;
+ margin:5px;
+ padding:8px 14px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🔐 LOGIN PAGE -->
-<div id="loginPage" class="container">
-  <div id="logo">SEEZU</div>
-  <img src="girl_main.jpg" class="girl">
-  <div class="card">
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login / Signup</button>
-  </div>
+<!-- LOGIN PAGE -->
+<div class="container" id="loginPage">
+ <div class="logo">SEEZU</div>
+ <img src="login-girl.jpg" class="girl">
+ <div class="card">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="signup()">Signup</button>
+ </div>
 </div>
 
-<!-- 🏠 HOME PAGE -->
-<div id="homePage" class="container hidden">
+<!-- MAIN PAGE -->
+<div class="container hidden" id="mainPage">
+ <div class="logo">SEEZU</div>
+ <img src="girl.jpg" class="girl">
 
-  <div id="logo">SEEZU</div>
-  <img src="girl_main.jpg" class="girl">
+ <div class="social">
+  <a href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
+  <a href="#">Snapchat</a>
+  <a href="https://wa.me/" target="_blank">WhatsApp</a>
+ </div>
 
-  <!-- SOCIAL -->
-  <div class="social">
-    <a href="#">Instagram</a>
-    <a href="#">Snapchat</a>
-    <a href="#">WhatsApp</a>
+ <div class="card">
+  <h3>Mood</h3>
+  <button onclick="toggleMood()">Change Mood</button>
+ </div>
+
+ <div class="card">
+  <h3>Music</h3>
+  <audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+  <div class="music-controls">
+   <button onclick="music.play()">▶</button>
+   <button onclick="music.pause()">⏸</button>
   </div>
+ </div>
 
-  <!-- MOOD + MUSIC -->
-  <div class="row">
-    <div class="small-card">
-      <button onclick="toggleMood()">Mood</button>
-    </div>
-    <div class="small-card">
-      <div>Music</div>
-      <button onclick="toggleMusic()">▶ / ⏸</button>
-    </div>
-  </div>
+ <div class="card">
+  <h3>Live Chat</h3>
+  <select id="room">
+   <option value="public">Public Chat</option>
+   <option value="private">Private Chat</option>
+  </select>
+  <div class="chat" id="chat"></div>
+  <div class="typing" id="typing"></div>
+  <input id="msg" placeholder="Type message">
+  <button onclick="sendMsg()">Send</button>
+ </div>
 
-  <!-- CHAT -->
-  <div class="card">
-    <h3>Live Chat</h3>
-    <div class="chat" id="chatBox">
-      <div class="msg">Hello 😊</div>
-    </div>
-    <input id="msg" placeholder="Type message">
-    <button onclick="sendMsg()">Send</button>
-    <button onclick="logout()">Logout</button>
-  </div>
-
+ <button onclick="logout()">Logout</button>
 </div>
 
-<script>
-/* LOGIN */
-function login(){
-  const u = username.value.trim();
-  const p = password.value.trim();
-  if(!u || !p){
-    alert("Username & Password likho 😑");
-    return;
-  }
-  localStorage.setItem("seezu_user",u);
-  showHome();
-}
-function logout(){
-  localStorage.removeItem("seezu_user");
-  location.reload();
-}
-function showHome(){
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, push, onChildAdded, set } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
+ authDomain:"seezu-1066d.firebaseapp.com",
+ databaseURL:"https://seezu-1066d-default-rtdb.firebaseio.com",
+ projectId:"seezu-1066d"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getDatabase(app);
+
+window.login=()=>signInWithEmailAndPassword(auth,email.value,password.value);
+window.signup=()=>createUserWithEmailAndPassword(auth,email.value,password.value);
+window.logout=()=>signOut(auth);
+
+onAuthStateChanged(auth,u=>{
+ if(u){
   loginPage.classList.add("hidden");
-  homePage.classList.remove("hidden");
-}
-window.onload=()=>{
-  if(localStorage.getItem("seezu_user")){
-    showHome();
-  }
+  mainPage.classList.remove("hidden");
+  loadChat();
+ }else{
+  loginPage.classList.remove("hidden");
+  mainPage.classList.add("hidden");
+ }
+});
+
+function loadChat(){
+ const chatRef=ref(db,"chat/"+room.value);
+ chat.innerHTML="";
+ onChildAdded(chatRef,s=>{
+  chat.innerHTML+=`<div class="msg">${s.val().text}<br><small>✓ Seen</small></div>`;
+ });
 }
 
-/* CHAT */
-function sendMsg(){
-  if(msg.value==="") return;
-  chatBox.innerHTML += `<div class="msg">${msg.value}</div>`;
-  msg.value="";
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
+window.sendMsg=()=>{
+ if(!msg.value)return;
+ push(ref(db,"chat/"+room.value),{
+  text:msg.value,
+  uid:auth.currentUser.uid
+ });
+ msg.value="";
+};
 
-/* MOOD */
-let dark=false;
-function toggleMood(){
-  dark=!dark;
-  document.body.style.background = dark ? "#1a1a1a" : "#f2f6fb";
-}
+msg.addEventListener("input",()=>{
+ set(ref(db,"typing"),{user:"typing..."});
+ typing.innerText="Typing...";
+ setTimeout(()=>typing.innerText="",1000);
+});
 
-/* MUSIC (DEMO) */
-let playing=false;
-function toggleMusic(){
-  playing=!playing;
-  alert(playing ? "Music Playing 🎵" : "Music Paused ⏸");
-}
+window.toggleMood=()=>{
+ document.body.style.background =
+ document.body.style.background=="rgb(238, 243, 249)" ? "#ffe6ef" : "#eef3f9";
+};
 </script>
 
 </body>
