@@ -1,51 +1,30 @@
-..<!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEEZU | Home</title>
 
-<!-- 🔤 GOOGLE FONT (Sigmar One) -->
 <link href="https://fonts.googleapis.com/css2?family=Sigmar+One&display=swap" rel="stylesheet">
-
-<!-- 🔐 AUTH GUARD -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-
-const firebaseConfig = {
- apiKey: "AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
- authDomain: "seezu-1066d.firebaseapp.com",
- projectId: "seezu-1066d"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-onAuthStateChanged(auth, user=>{
- if(!user){
-  window.location.href="login.html";
- }
-});
-
-window.logout=()=>{
- signOut(auth).then(()=>{
-  window.location.href="login.html";
- });
-};
-</script>
 
 <style>
 :root{
  --pink:#ff5c8d;
- --light:#f5f7fb;
- --card:#ffffff;
 }
 
+/* LIGHT */
 body{
  margin:0;
  font-family:Arial, sans-serif;
  background:linear-gradient(135deg,#fce4ec,#e3f2fd);
+ transition:.4s;
+}
+
+/* DARK */
+body.dark{
+ background:#0f0f0f;
+ color:#fff;
 }
 
 .app{
@@ -56,25 +35,12 @@ body{
 
 /* HEADER */
 .header{
- position:relative;
  text-align:center;
- margin-bottom:10px;
 }
 .logo{
  font-family:'Sigmar One', cursive;
  font-size:44px;
  color:var(--pink);
- letter-spacing:3px;
-}
-.logout{
- position:absolute;
- right:0;
- top:8px;
- border:none;
- background:none;
- color:var(--pink);
- font-size:14px;
- cursor:pointer;
 }
 
 /* PROFILE */
@@ -85,65 +51,105 @@ body{
 .profile img{
  width:150px;
  border-radius:25px;
- box-shadow:0 10px 25px rgba(0,0,0,.25);
+ box-shadow:0 10px 25px rgba(0,0,0,.3);
 }
 
 /* SOCIAL */
 .social{
  display:flex;
- justify-content:space-between;
  gap:8px;
  margin:15px 0;
 }
 .social a{
  flex:1;
- text-align:center;
  padding:10px;
+ text-align:center;
  background:var(--pink);
  color:#fff;
  border-radius:25px;
  text-decoration:none;
- font-size:14px;
 }
 
-/* CARD */
-.card{
- background:var(--card);
+/* MOOD + CHAT */
+.mood-chat{
+ display:flex;
+ gap:15px;
+ margin:20px 0;
+}
+.mc{
+ flex:1;
+ background:linear-gradient(180deg,#ffd1dc,#ff8fb1);
  border-radius:22px;
  padding:16px;
- margin-bottom:15px;
- box-shadow:0 6px 18px rgba(0,0,0,.12);
+ box-shadow:0 8px 20px rgba(0,0,0,.2);
+ display:flex;
+ flex-direction:column;
 }
-.card h3{
- margin-top:0;
- font-size:16px;
+body.dark .mc{
+ background:linear-gradient(180deg,#333,#111);
 }
 
-/* BUTTON */
-.btn{
- width:100%;
- padding:14px;
- border:none;
- border-radius:25px;
+/* TEXT */
+.small{font-size:14px;font-weight:bold}
+.big{margin-top:auto;font-size:26px;font-weight:bold}
+
+/* PINK CIRCLE */
+.circle{
+ margin-top:12px;
+ padding:10px;
+ border-radius:50px;
  background:var(--pink);
  color:#fff;
- font-size:16px;
- margin-top:10px;
+ text-align:center;
+ font-weight:bold;
  cursor:pointer;
+ transition:.3s;
+}
+.circle:hover{
+ transform:scale(1.05);
+ box-shadow:0 6px 15px rgba(255,92,141,.6);
+}
+
+/* LIVE CHAT FONT */
+.fancy{
+ font-family:'Sigmar One', cursive;
+ font-size:22px;
+ margin-bottom:10px;
 }
 
 /* MOOD */
 .moods{
- display:flex;
- justify-content:space-around;
  font-size:26px;
- margin-top:10px;
+ text-align:center;
+ margin:10px 0;
 }
 .mood-text{
  text-align:center;
- margin-top:8px;
  font-weight:bold;
- color:#555;
+}
+
+/* BUTTON */
+.btn{
+ margin-top:10px;
+ padding:12px;
+ border:none;
+ border-radius:25px;
+ background:var(--pink);
+ color:#fff;
+ cursor:pointer;
+ width:100%;
+}
+
+/* CARD (BOTTOM) */
+.card{
+ background:#fff;
+ border-radius:22px;
+ padding:16px;
+ margin:15px 0;
+ box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+body.dark .card{
+ background:#1e1e1e;
 }
 
 /* USER */
@@ -173,78 +179,96 @@ body{
 
 <div class="app">
 
- <!-- HEADER -->
- <div class="header">
-  <div class="logo">SEEZU</div>
-  <button class="logout" onclick="logout()">Logout</button>
- </div>
+<!-- HEADER -->
+<div class="header">
+ <div class="logo">SEEZU</div>
+</div>
 
- <!-- PROFILE -->
- <div class="profile">
-  <img src="tea-the-khajiit-cute.gif" alt="Anime Girl">
- </div>
+<!-- PROFILE -->
+<div class="profile">
+ <img src="tea-the-khajiit-cute.gif">
+</div>
 
- <!-- SOCIAL -->
- <div class="social">
+<!-- SOCIAL ROW 1 -->
+<div class="social">
   <a href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
   <a href="https://snapchat.com/add/" target="_blank">Snapchat</a>
   <a href="https://wa.me/91XXXXXXXXXX" target="_blank">WhatsApp</a>
- </div>
+</div>
 
- <!-- MOOD -->
- <div class="card">
-  <h3>Mood</h3>
+<!-- SOCIAL ROW 2 -->
+<div class="social">
+  <a href="https://facebook.com" target="_blank">Facebook</a>
+  <a href="https://youtube.com" target="_blank">YouTube</a>
+  <a href="#" class="premium">Premium</a>
+</div>
+
+<!-- MOOD + CHAT -->
+<div class="mood-chat">
+
+ <div class="mc">
+  <div class="small circle" onclick="toggleMode()">mode</div>
+  <div class="big">mood</div>
+
   <button class="btn" onclick="changeMood()">Change Mood</button>
-  <div class="moods" id="moods">😊 😄 😍 😎</div>
+  <div class="moods">😊 😄 😍 😎</div>
   <div class="mood-text" id="moodText">Feeling Happy 😊</div>
  </div>
-s
- <!-- MUSIC (HOME PAGE) -->
-<div class="card">
-  <h3>Music</h3>
-  🎧 Chill Lofi Beats
-  <button class="btn" onclick="location.href='music.html'">
-    Open Music Player
-  </button>
-</div>
 
- <!-- CONNECT -->
- <div class="card">
-  <h3>Connect & Discover</h3>
+ <div class="mc">
+  <div class="fancy">live chat</div>
 
-  <div class="user">
-   <div>
-    <img src="https://i.pravatar.cc/40?1">
-    Sakura_chan
-   </div>
-   <button class="follow">+ Follow</button>
-  </div>
-
-  <div class="user">
-   <div>
-    <img src="https://i.pravatar.cc/40?2">
-    Kaito_beats
-   </div>
-   <button class="follow">+ Follow</button>
-  </div>
+  <div class="circle" onclick="location.href='private.html'">private</div>
+  <div class="circle" onclick="location.href='public.html'">public</div>
  </div>
 
 </div>
 
-<!-- 🎭 MOOD SCRIPT -->
-<script>
-const moodList = [
- {emoji:"😊", text:"Feeling Happy 😊"},
- {emoji:"😄", text:"Feeling Excited 😄"},
- {emoji:"😍", text:"Feeling Loved 😍"},
- {emoji:"😎", text:"Feeling Cool 😎"},
- {emoji:"🥰", text:"Feeling Cute 🥰"},
- {emoji:"🤩", text:"Feeling Awesome 🤩"}
-];
+<!-- 🔽 NEECHHE KA PART (MISSING THA – AB HAI) -->
 
+<!-- MUSIC -->
+<div class="card">
+ <h3>Music</h3>
+ 🎧 Chill Lofi Beats
+ <button class="btn" onclick="location.href='music.html'">Open Music Player</button>
+</div>
+
+<!-- CONNECT -->
+<div class="card">
+ <h3>Connect & Discover</h3>
+
+ <div class="user">
+  <div><img src="https://i.pravatar.cc/40?1"> Sakura_chan</div>
+  <button class="follow">+ Follow</button>
+ </div>
+
+ <div class="user">
+  <div><img src="https://i.pravatar.cc/40?2"> Kaito_beats</div>
+  <button class="follow">+ Follow</button>
+ </div>
+</div>
+
+</div>
+
+<script>
+/* MODE */
+let dark=false;
+function toggleMode(){
+ dark=!dark;
+ document.body.classList.toggle("dark");
+}
+
+/* MOOD */
+const moods=[
+ "Feeling Happy 😊",
+ "Feeling Excited 😄",
+ "Feeling Loved 😍",
+ "Feeling Cool 😎",
+ "Feeling Cute 🥰"
+];
 function changeMood(){
- const random = moodList[Math.floor(Math.random()*moodList.length)];
- document.getElementById("moodText").innerText = random.text;
+ document.getElementById("moodText").innerText =
+ moods[Math.floor(Math.random()*moods.length)];
 }
 </script>
 
