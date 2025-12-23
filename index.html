@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SEEZU</title>
+<title>SEEZU | Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -17,6 +17,7 @@ body{
  background:var(--light);
 }
 .container{
+ width:100%;
  max-width:900px;
  margin:auto;
  padding:20px;
@@ -26,31 +27,39 @@ body{
  font-size:48px;
  font-weight:bold;
  color:var(--pink);
- margin:20px 0;
-}
-.girl{
- width:240px;
- border-radius:25px;
- box-shadow:0 10px 25px rgba(0,0,0,.2);
- margin:15px auto;
- display:block;
+ margin:30px 0;
 }
 .card{
  background:var(--card);
  border-radius:25px;
- padding:18px;
- margin:15px 0;
+ padding:25px;
+ max-width:420px;
+ margin:0 auto;
  box-shadow:0 5px 15px rgba(0,0,0,.1);
 }
-a.btn{
- display:block;
- text-decoration:none;
+input{
+ width:100%;
+ padding:12px;
+ border-radius:20px;
+ border:1px solid #ccc;
+ margin:8px 0;
+ font-size:14px;
+}
+button{
+ width:100%;
+ padding:14px;
+ border:none;
+ border-radius:25px;
  background:var(--pink);
  color:#fff;
- padding:14px;
- border-radius:25px;
- margin:10px 0;
  font-size:16px;
+ cursor:pointer;
+ margin-top:10px;
+}
+.small{
+ font-size:13px;
+ margin-top:12px;
+ opacity:.7;
 }
 </style>
 </head>
@@ -60,15 +69,57 @@ a.btn{
 <div class="container">
  <div class="logo">SEEZU</div>
 
- <img src="girl.jpg" class="girl" alt="SEEZU">
-
  <div class="card">
-  <a class="btn" href="login.html">Login / Signup</a>
-  <a class="btn" href="chat.html">Public Chat</a>
-  <a class="btn" href="private.html">Private Chat</a>
-  <a class="btn" href="music.html">Music Player</a>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+
+  <button onclick="login()">Login</button>
+  <button onclick="signup()">Signup</button>
+
+  <div class="small">
+   Login hone ke baad next page open hoga
+  </div>
  </div>
 </div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+const firebaseConfig = {
+ apiKey: "AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
+ authDomain: "seezu-1066d.firebaseapp.com",
+ projectId: "seezu-1066d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.login = () => {
+ signInWithEmailAndPassword(auth, email.value, password.value)
+ .then(()=>{
+   // 🔴 YAHAN NEXT PAGE KA FILE NAME CHANGE KARNA
+   window.location.href = "home.html";
+ });
+};
+
+window.signup = () => {
+ createUserWithEmailAndPassword(auth, email.value, password.value)
+ .then(()=>{
+   // 🔴 YAHAN BHI NEXT PAGE KA FILE NAME CHANGE KARNA
+   window.location.href = "home.html";
+ });
+};
+
+// already logged in user
+onAuthStateChanged(auth, user=>{
+ if(user){
+   // 🔴 AUTO REDIRECT (optional)
+   window.location.href = "home.html";
+ }
+});
+</script>
 
 </body>
 </html>
