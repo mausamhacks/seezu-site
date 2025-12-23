@@ -1,17 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Mood</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEEZU | Music</title>
+
 <style>
-body{background:#ffe6ef;font-family:Arial;text-align:center}
-button{padding:15px;border-radius:30px;border:none;background:#ff5c8d;color:#fff}
+:root{
+ --pink:#ff5c8d;
+ --card:#ffffff;
+}
+body{
+ margin:0;
+ font-family:Arial, sans-serif;
+ background:linear-gradient(135deg,#fce4ec,#e3f2fd);
+}
+.app{
+ max-width:420px;
+ margin:auto;
+ padding:16px;
+}
+.header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:15px;
+}
+.logo{
+ font-size:26px;
+ font-weight:bold;
+ color:var(--pink);
+}
+.card{
+ background:var(--card);
+ border-radius:22px;
+ padding:18px;
+ box-shadow:0 6px 18px rgba(0,0,0,.12);
+ text-align:center;
+}
+.btn{
+ background:var(--pink);
+ color:#fff;
+ border:none;
+ padding:14px;
+ border-radius:25px;
+ font-size:18px;
+ cursor:pointer;
+}
+.controls{
+ display:flex;
+ justify-content:space-around;
+ margin-top:15px;
+}
 </style>
 </head>
-<body>
-<h2>🎵 Mood / Music</h2>
-<button onclick="audio.play()">Play</button>
-<button onclick="audio.pause()">Pause</button>
 
-<audio id="audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<body>
+
+<div class="app">
+
+ <!-- HEADER -->
+ <div class="header">
+  <div class="logo">SEEZU</div>
+  <button class="btn" onclick="history.back()">⬅ Back</button>
+ </div>
+
+ <!-- MUSIC PLAYER -->
+ <div class="card">
+  <h3 id="songName">🎧 Chill Lofi Beats</h3>
+
+  <audio id="player"></audio>
+
+  <div class="controls">
+   <button class="btn" onclick="prevSong()">⏪</button>
+   <button class="btn" id="playPauseBtn" onclick="togglePlay()">▶️</button>
+   <button class="btn" onclick="nextSong()">⏩</button>
+  </div>
+ </div>
+
+</div>
+
+<script>
+const songs = [
+ { name:"Lofi Chill 1", file:"songs/song1.mp3" },
+ { name:"Lofi Chill 2", file:"songs/song2.mp3" },
+ { name:"Lofi Chill 3", file:"songs/song3.mp3" },
+ { name:"Lofi Chill 4", file:"songs/song4.mp3" }
+];
+
+let currentSong = 0;
+const player = document.getElementById("player");
+const songName = document.getElementById("songName");
+const playPauseBtn = document.getElementById("playPauseBtn");
+
+loadSong();
+
+function loadSong(autoPlay=false){
+ player.src = songs[currentSong].file;
+ songName.innerText = "🎧 " + songs[currentSong].name;
+ if(autoPlay){
+  player.play();
+  playPauseBtn.innerText = "⏸️";
+ }
+}
+
+function togglePlay(){
+ if(player.paused){
+  player.play();
+  playPauseBtn.innerText="⏸️";
+ }else{
+  player.pause();
+  playPauseBtn.innerText="▶️";
+ }
+}
+
+function nextSong(){
+ currentSong = (currentSong+1)%songs.length;
+ loadSong(true);
+}
+
+function prevSong(){
+ currentSong = (currentSong-1+songs.length)%songs.length;
+ loadSong(true);
+}
+
+player.addEventListener("ended", nextSong);
+</script>
+
 </body>
 </html>
