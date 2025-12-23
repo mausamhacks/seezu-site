@@ -1,10 +1,187 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEEZU Desktop Home</title>
+    <style>
+        :root {
+            --primary-pink: #ff85a1;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #e1f5fe 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Main Container */
+        .dashboard {
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* Header Area */
+        .header {
+            grid-column: 1 / span 3;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .logo { font-size: 24px; font-weight: bold; color: var(--primary-pink); letter-spacing: 2px; }
+
+        /* Glass Box Style */
+        .box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .box:hover { transform: translateY(-5px); }
+        h3 { margin-top: 0; color: #555; font-size: 1.1rem; }
+
+        /* Sidebar Elements */
+        .mood-box, .music-box, .social-box, .new-feature-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Feed Section */
+        .feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 15px;
+        }
+
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: #ddd; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-pink); border-radius: 10px; }
+    </style>
 </head>
 <body>
-<h1>Login Successful 🎉</h1>
-<p>Home page working</p>
+
+<div class="dashboard">
+    <header class="header">
+        <div class="logo">SEEZU</div>
+        <div class="search">[Search Box Here]</div>
+        <div class="profile">Admin Account ⚙️</div>
+    </header>
+
+    <aside class="left-side">
+        <div class="box mood-box">
+            <h3>Mood</h3>
+            <div style="font-size: 2rem; text-align: center;">😊 ✨</div>
+            <button class="btn">Change Mood</button>
+        </div>
+
+        <div class="box social-box">
+            <h3>Quick Links</h3>
+            <div style="display: flex; justify-content: space-around;">
+                <span>📸</span><span>👻</span><span>💬</span>
+            </div>
+        </div>
+
+        <div class="box new-feature-box">
+            <h3>[Stats Box]</h3>
+            <p>Profile Visitors: 1,240</p>
+        </div>
+    </aside>
+
+    <main class="feed-container">
+        <div class="box" style="text-align: center;">
+            <img src="https://via.placeholder.com/150" alt="Avatar" style="border-radius: 50%; margin-bottom: 10px;">
+            <h2>Welcome Back!</h2>
+        </div>
+
+        <div class="box">
+            <h3>Connect & Discover</h3>
+            <div class="user-card">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="avatar"></div>
+                    <div><b>Sakura_chan</b><br><small>ar soeairte</small></div>
+                </div>
+                <button class="btn" style="padding: 5px 15px;">+ Follow</button>
+            </div>
+        </div>
+
+        <div class="box">
+            <h3>Public Chat</h3>
+            <div style="height: 100px; border-bottom: 1px solid #ddd; margin-bottom: 10px;">
+                <small>User1: Hello!</small>
+            </div>
+            <input type="text" placeholder="Type message..." style="width: 80%; padding: 8px; border-radius: 10px; border: none;">
+        </div>
+    </main>
+
+    <aside class="right-side">
+        <div class="box music-box">
+            <h3>Music</h3>
+            <div style="background: #fff; border-radius: 10px; padding: 10px; text-align: center;">
+                <b>Chill Lofi Beats</b><br>
+                <span>◀️ ⏸️ ▶️</span>
+            </div>
+        </div>
+
+        <div class="box">
+            <h3>[Trending Box]</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                <small>#Anime</small> <small>#Lofi</small> <small>#Design</small>
+            </div>
+        </div>
+
+        <div class="box">
+            <h3>[Weather Widget]</h3>
+            <p>24°C - Sunny ☀️</p>
+        </div>
+    </aside>
+</div>
+
 </body>
 </html>
+
