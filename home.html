@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,14 +35,35 @@ body.dark{
 /* HEADER */
 .header{
  text-align:center;
+ position:relative;   /* 🔥 profile-top ke liye IMPORTANT */
 }
+
 .logo{
  font-family:'Sigmar One', cursive;
  font-size:44px;
  color:var(--pink);
 }
 
-/* PROFILE */
+/* TOP RIGHT PROFILE ICON */
+.profile-top{
+ position:absolute;
+ right:15px;
+ top:15px;
+ width:42px;
+ height:42px;
+ border-radius:50%;
+ overflow:hidden;
+ cursor:pointer;
+ box-shadow:0 4px 12px rgba(0,0,0,.25);
+ z-index:50;
+}
+.profile-top img{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+}
+
+/* CENTER PROFILE (AS IT IS) */
 .profile{
  text-align:center;
  margin:15px 0;
