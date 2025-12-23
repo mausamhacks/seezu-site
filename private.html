@@ -2,146 +2,194 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SEEZU | Ultimate Private Chat</title>
+<title>SEEZU | Ultimate Chat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{margin:0;font-family:Arial;background:#fde7f0}
+:root{
+ --bubble:#ff5c8d;
+ --bg:#fde7f0;
+}
+body{margin:0;font-family:Arial;background:var(--bg)}
 .app{max-width:420px;margin:auto;height:100vh;display:flex;flex-direction:column}
-.header{background:#ff5c8d;color:#fff;padding:12px;text-align:center;font-weight:bold}
-.messages{flex:1;overflow-y:auto;padding:10px;padding-bottom:120px}
-.msg{display:flex;margin-bottom:10px}
-.dp{width:34px;height:34px;border-radius:50%;object-fit:cover}
-.bubble{max-width:72%;padding:8px 12px;border-radius:16px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
-.nick{font-size:12px;font-weight:bold}
-.reply{font-size:11px;opacity:.7;border-left:3px solid #ff5c8d;padding-left:6px;margin-bottom:4px}
-.ctrl{font-size:11px;margin-top:4px}
-.ctrl span{margin-right:8px;cursor:pointer}
-.react span{cursor:pointer;margin-right:4px}
-.seen{font-size:11px;opacity:.6;text-align:right}
+.header{background:var(--bubble);color:#fff;padding:12px;text-align:center;font-weight:bold}
 
+.messages{
+ flex:1;overflow-y:auto;padding:10px;padding-bottom:150px
+}
+
+/* MESSAGE */
+.msg{display:flex;margin-bottom:10px;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+
+.dp{width:34px;height:34px;border-radius:50%}
+.bubble{
+ max-width:72%;padding:8px 12px;border-radius:16px;
+ background:var(--bubble);color:#fff;
+ box-shadow:0 2px 6px rgba(0,0,0,.15)
+}
+.left .bubble{background:#fff;color:#000}
+.nick{font-size:12px;font-weight:bold}
+
+/* INPUT */
 .input-box{
  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
  max-width:420px;width:100%;display:flex;gap:6px;
  padding:8px;background:#fff;box-shadow:0 -2px 10px rgba(0,0,0,.15)
 }
-.input-box input{flex:1;padding:10px;border-radius:20px;border:1px solid #ccc}
-.input-box button{background:#ff5c8d;color:#fff;border:none;padding:10px 14px;border-radius:20px}
-.typing{font-size:12px;padding:6px 10px;opacity:.7}
+textarea{flex:1;resize:none;padding:10px;border-radius:18px;border:1px solid #ccc}
+button{border:none;background:var(--bubble);color:#fff;padding:10px 14px;border-radius:18px}
+
+/* 🤌🏻 MENU */
+.menu-btn{background:none;color:var(--bubble);font-size:22px}
+.menu{
+ position:absolute;bottom:70px;left:10px;
+ background:#fff;border-radius:16px;
+ padding:10px;box-shadow:0 5px 20px rgba(0,0,0,.2);
+ display:none;animation:pop .25s ease
+}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+.menu button{
+ display:block;width:100%;margin:6px 0;
+ background:#fce4ec;color:#000
+}
+
+/* MEDIA */
+img.chat-img,video{max-width:100%;border-radius:12px;margin-top:6px}
+audio{width:100%;margin-top:6px}
 </style>
 </head>
 
 <body>
+
 <div class="app">
  <div class="header">🔒 Private Room</div>
+
  <div id="messages" class="messages"></div>
- <div id="typing" class="typing"></div>
+
+ <div class="menu" id="menu">
+  <button onclick="pick('image')">📷 Photo</button>
+  <button onclick="pick('video')">🎥 Video</button>
+  <button onclick="recordVoice()">🎤 Voice</button>
+  <button onclick="pick('audio')">🎶 Music</button>
+  <button onclick="changeTheme()">🎨 Theme</button>
+ </div>
 
  <div class="input-box">
-  <input id="msg" placeholder="Type message 💗">
-  <button onclick="send()">Send</button>
+  <button class="menu-btn" onclick="toggleMenu()">🤌🏻</button>
+  <textarea id="msg" placeholder="Message 💗"></textarea>
+  <button onclick="sendText()">Send</button>
  </div>
 </div>
 
+<input type="file" id="fileInput" hidden>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, update, remove, set }
+import { getDatabase, ref, push, onValue, update }
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
 
-/* 🔥 FIREBASE CONFIG */
-const firebaseConfig = {
+/* FIREBASE */
+const firebaseConfig={
  apiKey:"PASTE_KEY",
  authDomain:"seezu-1066d.firebaseapp.com",
  databaseURL:"https://seezu-1066d-default-rtdb.firebaseio.com",
- projectId:"seezu-1066d"
+ projectId:"seezu-1066d",
+ storageBucket:"seezu-1066d.appspot.com"
 };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const storage=getStorage(app);
 
 /* USER */
-let nick = localStorage.getItem("nick") || prompt("Nickname");
-let dp   = localStorage.getItem("dp") || prompt("DP image URL");
+let nick=localStorage.getItem("nick")||prompt("Nickname");
+let dp=localStorage.getItem("dp")||prompt("DP URL");
 localStorage.setItem("nick",nick);
 localStorage.setItem("dp",dp);
 
 /* ROOM */
-let room = prompt("Room code");
-const base = "privateRooms/"+room;
-const msgRef = ref(db,base+"/messages");
-const typingRef = ref(db,base+"/typing/"+nick);
-const statusRef = ref(db,base+"/status/"+nick);
+let room=prompt("Room code");
+const msgRef=ref(db,"rooms/"+room);
 
-/* ONLINE */
-set(statusRef,{online:true,last:Date.now()});
-window.addEventListener("beforeunload",()=>set(statusRef,{online:false,last:Date.now()}));
+/* MENU */
+window.toggleMenu=()=>menu.style.display=menu.style.display?"":"block";
 
-/* SEND */
-window.send=()=>{
+/* TEXT */
+window.sendText=()=>{
  if(!msg.value.trim())return;
- push(msgRef,{
-  nick,dp,text:msg.value,
-  time:Date.now(),seen:false,reply:null,reactions:{}
- });
- msg.value="";msg.focus();set(typingRef,false);
+ push(msgRef,{nick,dp,type:"text",text:msg.value,time:Date.now()});
+ msg.value="";
 };
 
-/* TYPING */
-msg.oninput=()=>{set(typingRef,true);setTimeout(()=>set(typingRef,false),1200)};
+/* PICK MEDIA */
+window.pick=(type)=>{
+ fileInput.accept=type+"/*";
+ fileInput.click();
+ fileInput.onchange=async()=>{
+  let f=fileInput.files[0];if(!f)return;
+  let p=type+"/"+Date.now()+"_"+f.name;
+  let r=sRef(storage,p);
+  await uploadBytes(r,f);
+  let url=await getDownloadURL(r);
+  push(msgRef,{nick,dp,type,url,time:Date.now()});
+ };
+};
 
-/* SHOW */
-onValue(msgRef,snap=>{
+/* VOICE */
+window.recordVoice=async()=>{
+ let s=await navigator.mediaDevices.getUserMedia({audio:true});
+ let r=new MediaRecorder(s),c=[];
+ r.start();
+ r.ondataavailable=e=>c.push(e.data);
+ setTimeout(()=>{
+  r.stop();
+  r.onstop=async()=>{
+   let b=new Blob(c,{type:"audio/webm"});
+   let p="voice/"+Date.now()+".webm";
+   let sr=sRef(storage,p);
+   await uploadBytes(sr,b);
+   let u=await getDownloadURL(sr);
+   push(msgRef,{nick,dp,type:"voice",url:u,time:Date.now()});
+  };
+ },3000);
+};
+
+/* THEME */
+window.changeTheme=()=>{
+ let colors=["#ff5c8d","#7c4dff","#4caf50","#ff9800"];
+ let c=colors[Math.floor(Math.random()*colors.length)];
+ document.documentElement.style.setProperty("--bubble",c);
+};
+
+/* LOAD */
+onValue(msgRef,s=>{
  messages.innerHTML="";
- snap.forEach(c=>{
-  let d=c.val(),isMe=d.nick===nick;
-  if(!isMe) update(ref(db,base+"/messages/"+c.key),{seen:true});
-
+ s.forEach(c=>{
+  let d=c.val(),me=d.nick===nick;
   let div=document.createElement("div");
-  div.className="msg";
-  div.style.justifyContent=isMe?"flex-end":"flex-start";
-
+  div.className="msg "+(me?"right":"left");
   div.innerHTML=`
-  ${!isMe?`<img class="dp" src="${d.dp}">`:""}
-  <div class="bubble" style="background:${isMe?'#ff5c8d':'#fff'};color:${isMe?'#fff':'#000'}">
-   <div class="nick">${isMe?'You':d.nick}</div>
-   ${d.reply?`<div class="reply">${d.reply}</div>`:""}
-   <div>${d.text}</div>
-   <div class="react">
-    <span onclick="react('${c.key}','❤️')">❤️</span>
-    <span onclick="react('${c.key}','😂')">😂</span>
-    <span onclick="react('${c.key}','🔥')">🔥</span>
+   ${!me?`<img class="dp" src="${d.dp}">`:""}
+   <div class="bubble">
+    <div class="nick">${me?"You":d.nick}</div>
+    ${
+     d.type==="text"?d.text:
+     d.type==="image"?`<img class="chat-img" src="${d.url}">`:
+     d.type==="video"?`<video controls src="${d.url}"></video>`:
+     d.type==="audio"?`<audio controls src="${d.url}"></audio>`:
+     d.type==="voice"?`<audio controls src="${d.url}"></audio>`:""
+    }
    </div>
-   ${isMe?`
-   <div class="ctrl">
-    <span onclick="editMsg('${c.key}')">edit</span>
-    <span onclick="delMsg('${c.key}')">delete</span>
-    <span onclick="unsend('${c.key}')">unsend</span>
-   </div>
-   <div class="seen">${d.seen?'✔✔ Seen':'✔ Sent'}</div>`:""}
-  </div>
-  ${isMe?`<img class="dp" src="${d.dp}">`:""}
+   ${me?`<img class="dp" src="${d.dp}">`:""}
   `;
   messages.appendChild(div);
  });
  messages.scrollTop=messages.scrollHeight;
 });
-
-/* REACTION */
-window.react=(id,e)=>{
- update(ref(db,base+"/messages/"+id+"/reactions/"+nick),e);
-};
-
-/* EDIT / DELETE */
-window.editMsg=id=>{
- let t=prompt("Edit");if(t)update(ref(db,base+"/messages/"+id),{text:t})
-};
-window.delMsg=id=>remove(ref(db,base+"/messages/"+id));
-window.unsend=id=>update(ref(db,base+"/messages/"+id),{text:"🚫 Message unsent"});
-
-/* TYPING SHOW */
-onValue(ref(db,base+"/typing"),s=>{
- let t="";s.forEach(c=>{if(c.key!==nick && c.val())t="Typing..."});
- typing.innerText=t;
-});
 </script>
+
 </body>
 </html>
