@@ -21,13 +21,13 @@ const auth = getAuth(app);
 
 onAuthStateChanged(auth, user=>{
  if(!user){
-  window.location.href = "login.html";
+  window.location.href="login.html";
  }
 });
 
-window.logout = ()=>{
+window.logout=()=>{
  signOut(auth).then(()=>{
-  window.location.href = "login.html";
+  window.location.href="login.html";
  });
 };
 </script>
@@ -35,111 +35,200 @@ window.logout = ()=>{
 <style>
 :root{
  --pink:#ff5c8d;
- --light:#eef3f9;
+ --light:#f5f7fb;
  --card:#ffffff;
 }
-
 body{
  margin:0;
  font-family:Arial, sans-serif;
- background:var(--light);
+ background:linear-gradient(135deg,#fce4ec,#e3f2fd);
 }
-
-.container{
+.app{
  max-width:420px;
  margin:auto;
- padding:16px;
+ padding:14px;
 }
 
-/* Header */
+/* HEADER */
 .header{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin-bottom:15px;
+ position:relative;
+ text-align:center;
+ margin-bottom:10px;
 }
-
 .logo{
- font-size:26px;
+ font-size:32px;
  font-weight:bold;
  color:var(--pink);
 }
+.logout{
+ position:absolute;
+ right:0;
+ top:0;
+ border:none;
+ background:transparent;
+ color:var(--pink);
+ font-size:14px;
+ cursor:pointer;
+}
 
-/* Card */
+/* PROFILE */
+.profile{
+ text-align:center;
+ margin:15px 0;
+}
+.profile img{
+ width:140px;
+ border-radius:20px;
+ box-shadow:0 10px 25px rgba(0,0,0,.2);
+}
+
+/* SOCIAL */
+.social{
+ display:flex;
+ justify-content:space-between;
+ gap:8px;
+ margin:15px 0;
+}
+.social a{
+ flex:1;
+ text-align:center;
+ padding:10px;
+ background:var(--pink);
+ color:#fff;
+ border-radius:25px;
+ text-decoration:none;
+ font-size:14px;
+}
+
+/* CARD */
 .card{
  background:var(--card);
- border-radius:22px;
- padding:16px;
+ border-radius:20px;
+ padding:15px;
  margin-bottom:15px;
- box-shadow:0 6px 18px rgba(0,0,0,.1);
- text-align:center;
+ box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+.card h3{
+ margin-top:0;
+ font-size:16px;
 }
 
-/* Image */
-.avatar{
- width:150px;
- border-radius:50%;
- box-shadow:0 10px 25px rgba(0,0,0,.2);
- margin-bottom:10px;
+/* MOOD */
+.moods{
+ display:flex;
+ justify-content:space-around;
+ font-size:24px;
 }
 
-/* Buttons */
+/* MUSIC */
+.music-controls{
+ display:flex;
+ justify-content:space-around;
+ margin-top:10px;
+}
+
+/* BUTTON */
 .btn{
  width:100%;
- padding:14px;
- margin-top:10px;
+ padding:12px;
  border:none;
  border-radius:25px;
  background:var(--pink);
  color:#fff;
- font-size:16px;
+ font-size:15px;
+ margin-top:10px;
  cursor:pointer;
 }
 
-/* Social */
-.social{
+/* USER LIST */
+.user{
  display:flex;
- justify-content:space-around;
- font-size:26px;
+ justify-content:space-between;
+ align-items:center;
  margin-top:10px;
 }
-.social a{
- text-decoration:none;
+.user img{
+ width:40px;
+ height:40px;
+ border-radius:50%;
+}
+.follow{
+ background:#ffd6e5;
+ border:none;
+ border-radius:20px;
+ padding:6px 12px;
+ color:#d6336c;
+ cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
  <!-- HEADER -->
  <div class="header">
   <div class="logo">SEEZU</div>
-  <button class="btn" style="width:auto;padding:8px 14px;" onclick="logout()">Logout</button>
+  <button class="logout" onclick="logout()">Logout</button>
  </div>
 
  <!-- PROFILE -->
- <div class="card">
-  <img src="images/girl.jpg" class="avatar" alt="SEEZU">
-  <h2>Welcome Back, Season 💖</h2>
+ <div class="profile">
+  <img src="images/girl.jpg" alt="SEEZU">
  </div>
 
- <!-- SOCIAL MEDIA -->
+ <!-- SOCIAL LINKS -->
+ <div class="social">
+  <a href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
+  <a href="https://snapchat.com/add/" target="_blank">Snapchat</a>
+  <a href="https://wa.me/91XXXXXXXXXX" target="_blank">WhatsApp</a>
+ </div>
+
+ <!-- MOOD -->
  <div class="card">
-  <h3>Connect With Me</h3>
-  <div class="social">
-   <a href="https://instagram.com/fx_mausam.xo" target="_blank">📸</a>
-   <a href="https://snapchat.com/add/" target="_blank">👻</a>
-   <a href="https://wa.me/91XXXXXXXXXX" target="_blank">💬</a>
+  <h3>Mood</h3>
+  <button class="btn">Change Mood</button>
+  <div class="moods">😊 😄 😍 😎</div>
+ </div>
+
+ <!-- MUSIC -->
+ <div class="card">
+  <h3>Music</h3>
+  <div>🎧 Chill Lofi Beats</div>
+  <div class="music-controls">
+   ◀️ ⏸ ▶️
   </div>
  </div>
 
- <!-- QUICK ACTIONS -->
+ <!-- CHAT -->
  <div class="card">
-  <button class="btn" onclick="location.href='chat.html'">Public Chat</button>
-  <button class="btn" onclick="location.href='private.html'">Private Chat</button>
-  <button class="btn" onclick="location.href='music.html'">Music</button>
+  <h3>Public Chat</h3>
+  <input type="text" placeholder="Type message..."
+   style="width:100%;padding:10px;border-radius:20px;border:1px solid #ddd;">
+  <button class="btn" onclick="location.href='chat.html'">Send</button>
+ </div>
+
+ <!-- CONNECT -->
+ <div class="card">
+  <h3>Connect & Discover</h3>
+
+  <div class="user">
+   <div>
+    <img src="https://i.pravatar.cc/40?1">
+    Sakura_chan
+   </div>
+   <button class="follow">+ Follow</button>
+  </div>
+
+  <div class="user">
+   <div>
+    <img src="https://i.pravatar.cc/40?2">
+    Kaito_beats
+   </div>
+   <button class="follow">+ Follow</button>
+  </div>
+
  </div>
 
 </div>
