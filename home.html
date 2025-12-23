@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEEZU | Home</title>
 
+<!-- 🔤 GOOGLE FONT (Sigmar One) -->
+<link href="https://fonts.googleapis.com/css2?family=Sigmar+One&display=swap" rel="stylesheet">
+
 <!-- 🔐 AUTH GUARD -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
@@ -38,11 +41,13 @@ window.logout=()=>{
  --light:#f5f7fb;
  --card:#ffffff;
 }
+
 body{
  margin:0;
  font-family:Arial, sans-serif;
  background:linear-gradient(135deg,#fce4ec,#e3f2fd);
 }
+
 .app{
  max-width:420px;
  margin:auto;
@@ -56,16 +61,17 @@ body{
  margin-bottom:10px;
 }
 .logo{
- font-size:32px;
- font-weight:bold;
+ font-family:'Sigmar One', cursive;
+ font-size:44px;
  color:var(--pink);
+ letter-spacing:3px;
 }
 .logout{
  position:absolute;
  right:0;
- top:0;
+ top:8px;
  border:none;
- background:transparent;
+ background:none;
  color:var(--pink);
  font-size:14px;
  cursor:pointer;
@@ -77,9 +83,9 @@ body{
  margin:15px 0;
 }
 .profile img{
- width:140px;
- border-radius:20px;
- box-shadow:0 10px 25px rgba(0,0,0,.2);
+ width:150px;
+ border-radius:25px;
+ box-shadow:0 10px 25px rgba(0,0,0,.25);
 }
 
 /* SOCIAL */
@@ -103,44 +109,44 @@ body{
 /* CARD */
 .card{
  background:var(--card);
- border-radius:20px;
- padding:15px;
+ border-radius:22px;
+ padding:16px;
  margin-bottom:15px;
- box-shadow:0 5px 15px rgba(0,0,0,.1);
+ box-shadow:0 6px 18px rgba(0,0,0,.12);
 }
 .card h3{
  margin-top:0;
  font-size:16px;
 }
 
-/* MOOD */
-.moods{
- display:flex;
- justify-content:space-around;
- font-size:24px;
-}
-
-/* MUSIC */
-.music-controls{
- display:flex;
- justify-content:space-around;
- margin-top:10px;
-}
-
 /* BUTTON */
 .btn{
  width:100%;
- padding:12px;
+ padding:14px;
  border:none;
  border-radius:25px;
  background:var(--pink);
  color:#fff;
- font-size:15px;
+ font-size:16px;
  margin-top:10px;
  cursor:pointer;
 }
 
-/* USER LIST */
+/* MOOD */
+.moods{
+ display:flex;
+ justify-content:space-around;
+ font-size:26px;
+ margin-top:10px;
+}
+.mood-text{
+ text-align:center;
+ margin-top:8px;
+ font-weight:bold;
+ color:#555;
+}
+
+/* USER */
 .user{
  display:flex;
  justify-content:space-between;
@@ -148,15 +154,15 @@ body{
  margin-top:10px;
 }
 .user img{
- width:40px;
- height:40px;
+ width:42px;
+ height:42px;
  border-radius:50%;
 }
 .follow{
  background:#ffd6e5;
  border:none;
  border-radius:20px;
- padding:6px 12px;
+ padding:6px 14px;
  color:#d6336c;
  cursor:pointer;
 }
@@ -175,10 +181,10 @@ body{
 
  <!-- PROFILE -->
  <div class="profile">
-  <img src="images/girl.jpg" alt="SEEZU">
+  <img src="girl.jpg" alt="Anime Girl">
  </div>
 
- <!-- SOCIAL LINKS -->
+ <!-- SOCIAL -->
  <div class="social">
   <a href="https://instagram.com/fx_mausam.xo" target="_blank">Instagram</a>
   <a href="https://snapchat.com/add/" target="_blank">Snapchat</a>
@@ -188,15 +194,16 @@ body{
  <!-- MOOD -->
  <div class="card">
   <h3>Mood</h3>
-  <button class="btn">Change Mood</button>
-  <div class="moods">😊 😄 😍 😎</div>
+  <button class="btn" onclick="changeMood()">Change Mood</button>
+  <div class="moods" id="moods">😊 😄 😍 😎</div>
+  <div class="mood-text" id="moodText">Feeling Happy 😊</div>
  </div>
 
  <!-- MUSIC -->
  <div class="card">
   <h3>Music</h3>
-  <div>🎧 Chill Lofi Beats</div>
-  <div class="music-controls">
+  🎧 Chill Lofi Beats
+  <div style="text-align:center;margin-top:10px;">
    ◀️ ⏸ ▶️
   </div>
  </div>
@@ -228,10 +235,26 @@ body{
    </div>
    <button class="follow">+ Follow</button>
   </div>
-
  </div>
 
 </div>
+
+<!-- 🎭 MOOD SCRIPT -->
+<script>
+const moodList = [
+ {emoji:"😊", text:"Feeling Happy 😊"},
+ {emoji:"😄", text:"Feeling Excited 😄"},
+ {emoji:"😍", text:"Feeling Loved 😍"},
+ {emoji:"😎", text:"Feeling Cool 😎"},
+ {emoji:"🥰", text:"Feeling Cute 🥰"},
+ {emoji:"🤩", text:"Feeling Awesome 🤩"}
+];
+
+function changeMood(){
+ const random = moodList[Math.floor(Math.random()*moodList.length)];
+ document.getElementById("moodText").innerText = random.text;
+}
+</script>
 
 </body>
 </html>
