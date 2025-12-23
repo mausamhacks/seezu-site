@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEEZU | Home</title>
 
-<!-- 🔐 AUTH GUARD + LOGOUT -->
+<!-- 🔐 AUTH GUARD -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
@@ -34,162 +34,113 @@ window.logout = ()=>{
 
 <style>
 :root{
- --primary-pink:#ff85a1;
- --glass-bg:rgba(255,255,255,0.7);
- --shadow:0 8px 32px rgba(31,38,135,.15);
+ --pink:#ff5c8d;
+ --light:#eef3f9;
+ --card:#ffffff;
 }
+
 body{
  margin:0;
- font-family:'Segoe UI',sans-serif;
- background:linear-gradient(135deg,#fce4ec,#e1f5fe);
- min-height:100vh;
- display:flex;
- justify-content:center;
- align-items:center;
+ font-family:Arial, sans-serif;
+ background:var(--light);
 }
-.dashboard{
- width:90%;
- max-width:1200px;
- height:85vh;
- display:grid;
- grid-template-columns:300px 1fr 300px;
- grid-template-rows:auto 1fr;
- gap:20px;
- padding:20px;
+
+.container{
+ max-width:420px;
+ margin:auto;
+ padding:16px;
 }
+
+/* Header */
 .header{
- grid-column:1/4;
  display:flex;
  justify-content:space-between;
  align-items:center;
- padding:12px 20px;
- background:var(--glass-bg);
- backdrop-filter:blur(10px);
- border-radius:15px;
- box-shadow:var(--shadow);
-}
-.logo{
- font-size:24px;
- font-weight:bold;
- color:var(--primary-pink);
- letter-spacing:2px;
-}
-.profile button{
- margin-left:10px;
-}
-.box{
- background:var(--glass-bg);
- backdrop-filter:blur(8px);
- border-radius:20px;
- padding:20px;
- box-shadow:var(--shadow);
-}
-.btn{
- background:var(--primary-pink);
- color:#fff;
- border:none;
- padding:10px;
- border-radius:25px;
- cursor:pointer;
- font-weight:bold;
-}
-.left-side,.right-side{
- display:flex;
- flex-direction:column;
- gap:20px;
-}
-.feed{
- display:flex;
- flex-direction:column;
- gap:20px;
- overflow-y:auto;
-}
-.social-icons{
- display:flex;
- justify-content:space-around;
- font-size:28px;
-}
-.social-icons a{
- text-decoration:none;
-}
-.avatar{
- width:160px;
- border-radius:50%;
- box-shadow:0 10px 25px rgba(0,0,0,.2);
+ margin-bottom:15px;
 }
 
-/* 📱 MOBILE VIEW */
-@media(max-width:768px){
- body{align-items:flex-start;}
- .dashboard{
-  grid-template-columns:1fr;
-  height:auto;
- }
- .left-side,.right-side{display:none;}
- .header{flex-direction:column;gap:10px;}
+.logo{
+ font-size:26px;
+ font-weight:bold;
+ color:var(--pink);
+}
+
+/* Card */
+.card{
+ background:var(--card);
+ border-radius:22px;
+ padding:16px;
+ margin-bottom:15px;
+ box-shadow:0 6px 18px rgba(0,0,0,.1);
+ text-align:center;
+}
+
+/* Image */
+.avatar{
+ width:150px;
+ border-radius:50%;
+ box-shadow:0 10px 25px rgba(0,0,0,.2);
+ margin-bottom:10px;
+}
+
+/* Buttons */
+.btn{
+ width:100%;
+ padding:14px;
+ margin-top:10px;
+ border:none;
+ border-radius:25px;
+ background:var(--pink);
+ color:#fff;
+ font-size:16px;
+ cursor:pointer;
+}
+
+/* Social */
+.social{
+ display:flex;
+ justify-content:space-around;
+ font-size:26px;
+ margin-top:10px;
+}
+.social a{
+ text-decoration:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="dashboard">
+<div class="container">
 
-<header class="header">
- <div class="logo">SEEZU</div>
- <div class="profile">
-  Admin ⚙️
-  <button class="btn" onclick="logout()">Logout</button>
- </div>
-</header>
-
-<!-- LEFT -->
-<aside class="left-side">
- <div class="box">
-  <h3>Mood</h3>
-  <div style="font-size:2rem;text-align:center;">😊 ✨</div>
-  <button class="btn">Change Mood</button>
+ <!-- HEADER -->
+ <div class="header">
+  <div class="logo">SEEZU</div>
+  <button class="btn" style="width:auto;padding:8px 14px;" onclick="logout()">Logout</button>
  </div>
 
- <div class="box">
-  <h3>Social Media</h3>
-  <div class="social-icons">
-   <!-- 🔗 REAL LINKS -->
+ <!-- PROFILE -->
+ <div class="card">
+  <img src="images/girl.jpg" class="avatar" alt="SEEZU">
+  <h2>Welcome Back, Season 💖</h2>
+ </div>
+
+ <!-- SOCIAL MEDIA -->
+ <div class="card">
+  <h3>Connect With Me</h3>
+  <div class="social">
    <a href="https://instagram.com/fx_mausam.xo" target="_blank">📸</a>
    <a href="https://snapchat.com/add/" target="_blank">👻</a>
    <a href="https://wa.me/91XXXXXXXXXX" target="_blank">💬</a>
   </div>
  </div>
-</aside>
 
-<!-- CENTER -->
-<main class="feed">
- <div class="box" style="text-align:center;">
-  <!-- 🖼️ REAL IMAGE -->
-  <img src="girl.jpg" class="avatar" alt="SEEZU">
-  <h2>Welcome Back, Season 💖</h2>
- </div>
-
- <div class="box">
-  <h3>Quick Access</h3>
-  <button class="btn" onclick="location.href='chat.html'">Public Chat</button><br><br>
-  <button class="btn" onclick="location.href='private.html'">Private Chat</button><br><br>
+ <!-- QUICK ACTIONS -->
+ <div class="card">
+  <button class="btn" onclick="location.href='chat.html'">Public Chat</button>
+  <button class="btn" onclick="location.href='private.html'">Private Chat</button>
   <button class="btn" onclick="location.href='music.html'">Music</button>
  </div>
-</main>
-
-<!-- RIGHT -->
-<aside class="right-side">
- <div class="box">
-  <h3>Music</h3>
-  <p>🎧 Chill Lofi Beats</p>
- </div>
-
- <div class="box">
-  <h3>Weather</h3>
-  <p>24°C ☀️ Sunny</p>
- </div>
-</aside>
 
 </div>
 
