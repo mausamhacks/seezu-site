@@ -15,7 +15,8 @@ body{margin:0;font-family:Arial;background:var(--bg)}
 .header{background:var(--bubble);color:#fff;padding:12px;text-align:center;font-weight:bold}
 
 .messages{
- flex:1;overflow-y:auto;padding:10px;padding-bottom:150px
+ flex:1;overflow-y:auto;padding:10px;padding-bottom:150px;
+ background-size:cover;background-position:center;
 }
 
 /* MESSAGE */
@@ -69,11 +70,13 @@ audio{width:100%;margin-top:6px}
  <div id="messages" class="messages"></div>
 
  <div class="menu" id="menu">
-  <button onclick="pick('image')">📷 Photo</button>
-  <button onclick="pick('video')">🎥 Video</button>
+  <button onclick="pickMedia('image')">📷 Photo</button>
+  <button onclick="pickMedia('video')">🎥 Video</button>
   <button onclick="recordVoice()">🎤 Voice</button>
-  <button onclick="pick('audio')">🎶 Music</button>
+  <button onclick="pickMedia('audio')">🎶 Music</button>
+  <button onclick="pickWallpaper()">🖼️ Wallpaper</button>
   <button onclick="changeTheme()">🎨 Theme</button>
+  <button onclick="toggleNotify()">🔔 Notification</button>
  </div>
 
  <div class="input-box">
@@ -87,22 +90,22 @@ audio{width:100%;margin-top:6px}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, update }
+import { getDatabase, ref, push, onValue }
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
-from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
 
-/* FIREBASE */
+/* FIREBASE (MESSAGES ONLY) */
 const firebaseConfig={
  apiKey:"PASTE_KEY",
  authDomain:"seezu-1066d.firebaseapp.com",
  databaseURL:"https://seezu-1066d-default-rtdb.firebaseio.com",
- projectId:"seezu-1066d",
- storageBucket:"seezu-1066d.appspot.com"
+ projectId:"seezu-1066d"
 };
 const app=initializeApp(firebaseConfig);
 const db=getDatabase(app);
-const storage=getStorage(app);
+
+/* CLOUDINARY */
+const CLOUD="dvvymqh4w";
+const PRESET="seezu_upload";
 
 /* USER */
 let nick=localStorage.getItem("nick")||prompt("Nickname");
@@ -124,37 +127,42 @@ window.sendText=()=>{
  msg.value="";
 };
 
+/* CLOUDINARY UPLOAD */
+async function uploadCloud(file,type){
+ let resource = (type==="image")?"image":"video";
+ let fd=new FormData();
+ fd.append("file",file);
+ fd.append("upload_preset",PRESET);
+ let r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/${resource}/upload`,{
+  method:"POST",body:fd
+ });
+ let d=await r.json();
+ return d.secure_url;
+}
+
 /* PICK MEDIA */
-window.pick=(type)=>{
+window.pickMedia=(type)=>{
  fileInput.accept=type+"/*";
  fileInput.click();
  fileInput.onchange=async()=>{
   let f=fileInput.files[0];if(!f)return;
-  let p=type+"/"+Date.now()+"_"+f.name;
-  let r=sRef(storage,p);
-  await uploadBytes(r,f);
-  let url=await getDownloadURL(r);
+  let url=await uploadCloud(f,type);
   push(msgRef,{nick,dp,type,url,time:Date.now()});
  };
 };
 
-/* VOICE */
+/* VOICE NOTE */
 window.recordVoice=async()=>{
  let s=await navigator.mediaDevices.getUserMedia({audio:true});
  let r=new MediaRecorder(s),c=[];
  r.start();
  r.ondataavailable=e=>c.push(e.data);
- setTimeout(()=>{
-  r.stop();
-  r.onstop=async()=>{
-   let b=new Blob(c,{type:"audio/webm"});
-   let p="voice/"+Date.now()+".webm";
-   let sr=sRef(storage,p);
-   await uploadBytes(sr,b);
-   let u=await getDownloadURL(sr);
-   push(msgRef,{nick,dp,type:"voice",url:u,time:Date.now()});
-  };
- },3000);
+ setTimeout(()=>r.stop(),3000);
+ r.onstop=async()=>{
+  let b=new Blob(c,{type:"audio/webm"});
+  let url=await uploadCloud(b,"video");
+  push(msgRef,{nick,dp,type:"voice",url,time:Date.now()});
+ };
 };
 
 /* THEME */
@@ -164,11 +172,44 @@ window.changeTheme=()=>{
  document.documentElement.style.setProperty("--bubble",c);
 };
 
+/* WALLPAPER */
+window.pickWallpaper=()=>{
+ fileInput.accept="image/*";
+ fileInput.click();
+ fileInput.onchange=()=>{
+  let f=fileInput.files[0];if(!f)return;
+  let r=new FileReader();
+  r.onload=e=>{
+   messages.style.backgroundImage=`url(${e.target.result})`;
+   localStorage.setItem("wall_"+room,e.target.result);
+  };
+  r.readAsDataURL(f);
+ };
+};
+let w=localStorage.getItem("wall_"+room);
+if(w)messages.style.backgroundImage=`url(${w})`;
+
+/* NOTIFICATION */
+let notifyOn=localStorage.getItem("notify")==="true";
+window.toggleNotify=async()=>{
+ if(Notification.permission!=="granted")
+  await Notification.requestPermission();
+ notifyOn=!notifyOn;
+ localStorage.setItem("notify",notifyOn);
+ alert("Notification "+(notifyOn?"ON":"OFF"));
+};
+
 /* LOAD */
 onValue(msgRef,s=>{
  messages.innerHTML="";
  s.forEach(c=>{
   let d=c.val(),me=d.nick===nick;
+  if(!me && notifyOn && document.hidden){
+   new Notification("New message",{
+    body:d.nick+(d.type==="text"?": "+d.text:" sent media"),
+    icon:d.dp
+   });
+  }
   let div=document.createElement("div");
   div.className="msg "+(me?"right":"left");
   div.innerHTML=`
