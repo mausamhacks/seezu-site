@@ -93,9 +93,9 @@ button{
   <input type="text" id="username" placeholder="Username">
   <input type="password" id="password" placeholder="Password">
 
-  <button id="mainBtn" onclick="login()">Sign In</button>
+  <button id="mainBtn">Sign In</button>
 
-  <div class="link" id="toggleText" onclick="toggleMode()">
+  <div class="link" id="toggleText">
    New account? Create one
   </div>
 
@@ -114,7 +114,7 @@ import {
 } from
 "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-/* 🔥 FIREBASE */
+/* 🔥 FIREBASE CONFIG */
 const firebaseConfig = {
  apiKey: "AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
  authDomain: "seezu-1066d.firebaseapp.com",
@@ -126,7 +126,8 @@ const db = getFirestore(app);
 
 let mode = "login"; // login | signup
 
-window.toggleMode = ()=>{
+/* 🔁 TOGGLE LOGIN / SIGNUP */
+toggleText.onclick = ()=>{
  msg.innerText = "";
  if(mode === "login"){
   mode = "signup";
@@ -141,8 +142,8 @@ window.toggleMode = ()=>{
  }
 };
 
-/* 🔐 LOGIN */
-window.login = async ()=>{
+/* 🔘 MAIN BUTTON */
+mainBtn.onclick = async ()=>{
  const u = username.value.trim();
  const p = password.value;
 
@@ -151,50 +152,38 @@ window.login = async ()=>{
   return;
  }
 
- const snap = await getDoc(doc(db,"users",u));
- if(!snap.exists()){
-  msg.innerText = "User not found";
-  return;
- }
-
- if(snap.data().password !== p){
-  msg.innerText = "Wrong password";
-  return;
- }
-
- window.location.href = "home.html";
-};
-
-/* 🆕 SIGNUP */
-window.signup = async ()=>{
- const u = username.value.trim();
- const p = password.value;
-
- if(!u || !p){
-  msg.innerText = "Fill all fields";
-  return;
- }
-
- const ref = doc(db,"users",u);
- if((await getDoc(ref)).exists()){
-  msg.innerText = "Username already exists";
-  return;
- }
-
- await setDoc(ref,{
-  username: u,
-  password: p
- });
-
- window.location.href = "home.html";
-};
-
-/* 🔁 BUTTON HANDLER */
-document.getElementById("mainBtn").onclick = ()=>{
  if(mode === "login"){
-  login();
+  /* 🔐 LOGIN */
+  const snap = await getDoc(doc(db,"users",u));
+  if(!snap.exists()){
+   msg.innerText = "User not found";
+   return;
+  }
+  if(snap.data().password !== p){
+   msg.innerText = "Wrong password";
+   return;
+  }
+
+  /* ✅ SESSION SAVE */
+  localStorage.setItem("seezuUser", u);
+  window.location.href = "home.html";
+
  }else{
-  signup();
+  /* 🆕 SIGNUP */
+  const ref = doc(db,"users",u);
+  if((await getDoc(ref)).exists()){
+   msg.innerText = "Username already exists";
+   return;
+  }
+
+  await setDoc(ref,{
+   username: u,
+   password: p
+  });
+
+  /* ✅ SESSION SAVE */
+  localStorage.setItem("seezuUser", u);
+  window.location.href = "home.html";
  }
 };
 </script>
