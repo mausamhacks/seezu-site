@@ -3,115 +3,144 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SEEZU | Spider</title>
+<title>SEEZU | Spider Panel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 🔐 AES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
 <style>
 body{
  margin:0;
- font-family:Arial, sans-serif;
+ font-family:Arial;
  background:#fde7f0;
 }
-.card{
- max-width:340px;
- margin:40px auto;
+.popup{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.35);
+ display:flex;
+ justify-content:center;
+ align-items:center;
+}
+.box{
  background:#fff0f6;
+ width:330px;
  padding:20px;
  border-radius:26px;
  text-align:center;
- box-shadow:0 15px 30px rgba(0,0,0,.2);
+ box-shadow:0 20px 35px rgba(0,0,0,.25);
+ position:relative;
 }
-
-/* 👤 PROFILE PHOTO */
-.profile-pic{
- width:110px;
- height:110px;
+.close{
+ position:absolute;
+ top:10px;
+ right:15px;
+ cursor:pointer;
+}
+.avatar{
+ width:90px;
+ height:90px;
  border-radius:50%;
  object-fit:cover;
- box-shadow:0 8px 18px rgba(0,0,0,.25);
+ box-shadow:0 6px 15px rgba(0,0,0,.2);
  cursor:pointer;
 }
-.upload-text{
- font-size:12px;
- color:#ff5c8d;
- margin-top:6px;
-}
-
-/* 👤 USERNAME */
-h3{
- color:#ff5c8d;
- margin:10px 0;
-}
+h3{color:#ff5c8d;margin:8px 0}
 small{font-size:12px;color:#777}
 
-/* 🔘 BUTTONS */
-.btn{
- width:100%;
+.pm{
+ background:#ffe6f0;
  padding:12px;
+ border-radius:20px;
+ margin-top:10px;
+}
+.pm input,.pm button{
+ width:100%;
+ padding:8px;
+ margin:5px 0;
+ border-radius:15px;
+ border:1px solid #ff9bb8;
+}
+.pm button{
+ background:#ff5c8d;
+ color:#fff;
  border:none;
- border-radius:22px;
+}
+
+.btn{
+ display:block;
  background:#ff5c8d;
  color:white;
- margin-top:10px;
- cursor:pointer;
+ padding:8px;
+ margin:6px 0;
+ border-radius:18px;
+ text-decoration:none;
 }
 .logout{
  background:#ff1744;
+ color:white;
+ border:none;
+ padding:9px;
+ border-radius:18px;
+ width:100%;
+ margin-top:8px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="popup">
+ <div class="box">
 
- <!-- 👤 PROFILE PHOTO -->
- <img src="https://i.imgur.com/8Km9tLL.png"
-      id="profileImg"
-      class="profile-pic"
-      title="Click to change photo">
+  <span class="close" onclick="history.back()">✖</span>
 
- <div class="upload-text">Tap photo to change</div>
- <input type="file" id="photoInput" accept="image/*" hidden>
+  <!-- 👤 PROFILE -->
+  <img id="profileImg"
+       src="https://i.imgur.com/8Km9tLL.png"
+       class="avatar"
+       title="Tap to change photo">
 
- <!-- 👤 USERNAME -->
- <h3 id="username" contenteditable="true">@loading...</h3>
- <small>Edit name & tap outside to save</small>
+  <input type="file" id="photoInput" accept="image/*" hidden>
+  <small>Tap photo to change</small>
 
- <!-- 🚪 LOGOUT -->
- <button class="btn logout" id="logoutBtn">Logout</button>
+  <h3 id="username" contenteditable="true">@loading...</h3>
 
+  <!-- 🔐 PASSWORD MANAGER -->
+  <div class="pm">
+   <h4>🔐 Password Manager</h4>
+
+   <input type="password" id="master" placeholder="Master Password">
+   <button onclick="unlock()">Unlock</button>
+
+   <div id="vault" style="display:none">
+    <input id="site" placeholder="Website / App">
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button onclick="savePass()">Save</button>
+    <div id="list"></div>
+   </div>
+  </div>
+
+  <!-- ⚙️ SETTINGS -->
+  <a class="btn" href="O.html">⚙️ Account Settings</a>
+  <a class="btn" href="OO.html">🎨 Theme Settings</a>
+  <a class="btn" href="OOO.html">🔔 Notifications</a>
+
+  <!-- 🚪 LOGOUT -->
+  <button class="logout" id="logoutBtn">Logout</button>
+
+ </div>
 </div>
 
-<!-- 🔥 FIREBASE -->
 <script type="module">
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
 
-import {
- getAuth,
- onAuthStateChanged,
- signOut
-} from
-"https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-
-import {
- getFirestore,
- doc,
- getDoc,
- updateDoc
-} from
-"https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-
-import {
- getStorage,
- ref,
- uploadBytes,
- getDownloadURL
-} from
-"https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
-
-/* 🔥 TUMHARA FIREBASE */
+/* 🔥 SAME FIREBASE PROJECT */
 const firebaseConfig = {
  apiKey: "AIzaSyBkHcQJJ4HXU4R23J2nBy1z4ElL3_Hr1D0",
  authDomain: "seezu-1066d.firebaseapp.com",
@@ -124,65 +153,85 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-/* ELEMENTS */
 const nameBox = document.getElementById("username");
 const img = document.getElementById("profileImg");
 const input = document.getElementById("photoInput");
 
-/* 🔐 LOAD USER PROFILE */
+let MASTER="";
+
+/* 🔐 AUTH CHECK + LOAD USER */
 onAuthStateChanged(auth, async (user)=>{
  if(!user){
   location.href="login.html";
   return;
  }
-
- const refDoc = doc(db,"users",user.uid);
- const snap = await getDoc(refDoc);
-
+ const snap = await getDoc(doc(db,"users",user.uid));
  if(snap.exists()){
-  const data = snap.data();
-  nameBox.innerText = "@"+data.username;
-  if(data.photoURL){
-   img.src = data.photoURL;
-  }
+  const d=snap.data();
+  nameBox.innerText="@"+d.username;
+  if(d.photoURL) img.src=d.photoURL;
  }
 });
 
-/* ✏️ SAVE USERNAME */
+/* ✏️ USERNAME SAVE */
 nameBox.addEventListener("blur", async ()=>{
- const user = auth.currentUser;
- if(!user) return;
-
- const newName = nameBox.innerText.replace("@","").trim();
- if(!newName) return;
-
- await updateDoc(doc(db,"users",user.uid),{
-  username:newName
+ const u=auth.currentUser;
+ if(!u) return;
+ await updateDoc(doc(db,"users",u.uid),{
+  username:nameBox.innerText.replace("@","")
  });
 });
 
 /* 📸 PHOTO UPLOAD */
-img.onclick = ()=> input.click();
-
-input.onchange = async ()=>{
- const file = input.files[0];
+img.onclick=()=>input.click();
+input.onchange=async ()=>{
+ const u=auth.currentUser;
+ const file=input.files[0];
  if(!file) return;
 
- const user = auth.currentUser;
- const imgRef = ref(storage, "profilePhotos/"+user.uid);
+ const r=ref(storage,"profilePhotos/"+u.uid);
+ await uploadBytes(r,file);
+ const url=await getDownloadURL(r);
 
- await uploadBytes(imgRef, file);
- const url = await getDownloadURL(imgRef);
-
- img.src = url;
-
- await updateDoc(doc(db,"users",user.uid),{
-  photoURL:url
- });
+ img.src=url;
+ await updateDoc(doc(db,"users",u.uid),{photoURL:url});
 };
 
+/* 🔐 PASSWORD MANAGER */
+window.unlock=()=>{
+ MASTER=master.value;
+ if(!MASTER) return alert("Enter master password");
+ vault.style.display="block";
+ loadPass();
+};
+
+window.savePass=async ()=>{
+ const enc=CryptoJS.AES.encrypt(pass.value,MASTER).toString();
+ await addDoc(collection(db,"passwords"),{
+  uid:auth.currentUser.uid,
+  site:site.value,
+  user:user.value,
+  pass:enc
+ });
+ loadPass();
+};
+
+async function loadPass(){
+ const snap=await getDocs(collection(db,"passwords"));
+ let html="";
+ snap.forEach(d=>{
+  const x=d.data();
+  if(x.uid===auth.currentUser.uid){
+   const dec=CryptoJS.AES.decrypt(x.pass,MASTER)
+             .toString(CryptoJS.enc.Utf8);
+   html+=`<hr>🌐 ${x.site}<br>👤 ${x.user}<br>🔑 ${dec}`;
+  }
+ });
+ list.innerHTML=html;
+}
+
 /* 🚪 LOGOUT */
-logoutBtn.onclick = async ()=>{
+logoutBtn.onclick=async ()=>{
  await signOut(auth);
  location.href="login.html";
 };
