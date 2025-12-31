@@ -1,185 +1,699 @@
-
 <!DOCTYPE html>
+
 <html lang="en">
+
+
+
 <head>
-<meta charset="UTF-8">
-<title>SEEZU CARDS</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-<style>
-*{box-sizing:border-box}
-body{
- margin:0;font-family:Poppins,sans-serif;
- background:linear-gradient(135deg,#ff9a9e,#fad0c4);
- overflow:hidden;
-}
-.backBtn{
- position:fixed;top:12px;left:12px;z-index:20;
- background:#ff4f81;color:#fff;border:none;
- padding:8px 14px;border-radius:20px;font-weight:600;cursor:pointer
-}
-.rain span{
- position:absolute;top:-10%;width:2px;height:90px;
- background:rgba(255,255,255,.5);
- animation:rain linear infinite
-}
-@keyframes rain{to{transform:translateY(120vh)}}
-.page{height:100vh;overflow-y:auto;position:relative;z-index:2}
-.header{text-align:center;padding:20px;color:#fff}
+    <meta charset="UTF-8">
 
-.grid{
- display:grid;grid-template-columns:repeat(2,1fr);
- gap:14px;padding:14px;max-width:420px;margin:auto
-}
-.card{
- position:relative;
- background:rgba(255,255,255,.25);
- backdrop-filter:blur(8px);
- border-radius:22px;padding:14px;text-align:center;color:#fff;
- box-shadow:0 10px 25px rgba(0,0,0,.2)
-}
-.avatar{
- width:78px;height:78px;border-radius:50%;
- border:3px solid #fff;object-fit:cover;margin-bottom:6px
-}
-.openBtn{
- margin-top:6px;padding:9px 20px;border:none;border-radius:25px;
- background:#ff4f81;color:#fff;font-weight:600;cursor:pointer
-}
+    <title>SURPRISE CARD | SEEZU</title>
 
-/* STATUS */
-.status{
- position:absolute;top:8px;right:10px;
- font-size:11px;display:flex;align-items:center;gap:5px
-}
-.dot{
- width:8px;height:8px;border-radius:50%;
- background:#00ff6a;box-shadow:0 0 6px #00ff6a
-}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/* MODAL */
-.modal{
- position:fixed;inset:0;background:rgba(0,0,0,.6);
- display:none;justify-content:center;align-items:center;z-index:30
-}
-.modalBox{
- background:#fff;color:#333;padding:22px;border-radius:20px;
- width:85%;max-width:300px;text-align:center
-}
-input{
- width:100%;padding:12px;border-radius:25px;border:1px solid #ddd;
- margin-bottom:10px;text-align:center
-}
-.enterBtn{
- background:#ff4f81;color:#fff;border:none;
- padding:10px 22px;border-radius:25px;font-weight:600;cursor:pointer
-}
-.error{color:red;font-size:13px;display:none}
-</style>
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+
+
+    <style>
+
+        * {
+
+            box-sizing: border-box
+
+        }
+
+
+
+        body {
+
+            margin: 0;
+
+            font-family: Poppins, sans-serif;
+
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+
+            overflow: hidden;
+
+        }
+
+
+
+        /* BACK */
+
+        .backBtn {
+
+            position: fixed;
+
+            top: 12px;
+
+            left: 12px;
+
+            z-index: 20;
+
+            background: #ff4f81;
+
+            color: #fff;
+
+            border: none;
+
+            padding: 8px 14px;
+
+            border-radius: 20px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+
+        /* RAIN */
+
+        .rain span {
+
+            position: absolute;
+
+            top: -10%;
+
+            width: 2px;
+
+            height: 90px;
+
+            background: rgba(255, 255, 255, .5);
+
+            animation: rain linear infinite;
+
+        }
+
+
+
+        @keyframes rain {
+
+            to {
+
+                transform: translateY(120vh)
+
+            }
+
+        }
+
+
+
+        .page {
+
+            height: 100vh;
+
+            overflow-y: auto;
+
+            position: relative;
+
+            z-index: 2;
+
+        }
+
+
+
+        /* HEADER */
+
+        .header {
+
+            text-align: center;
+
+            padding: 26px 16px;
+
+            color: #fff;
+
+        }
+
+
+
+        .header h1 {
+
+            margin: 0;
+
+            font-size: 26px;
+
+            letter-spacing: 1px;
+
+        }
+
+
+
+        .header p {
+
+            margin-top: 8px;
+
+            font-size: 13px;
+
+            opacity: .95;
+
+        }
+
+
+
+        /* GRID */
+
+        .grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 14px;
+
+            padding: 14px;
+
+            max-width: 420px;
+
+            margin: auto;
+
+        }
+
+
+
+        /* CARD */
+
+        .card {
+
+            position: relative;
+
+            background: rgba(255, 255, 255, .25);
+
+            backdrop-filter: blur(10px);
+
+            border-radius: 22px;
+
+            padding: 14px;
+
+            text-align: center;
+
+            color: #fff;
+
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .2);
+
+        }
+
+
+
+        .avatar {
+
+            width: 78px;
+
+            height: 78px;
+
+            border-radius: 50%;
+
+            border: 3px solid #fff;
+
+            object-fit: cover;
+
+            margin-bottom: 6px;
+
+        }
+
+
+
+        .openBtn {
+
+            margin-top: 8px;
+
+            padding: 9px 20px;
+
+            border: none;
+
+            border-radius: 25px;
+
+            background: #ff4f81;
+
+            color: #fff;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+
+        /* PRICE */
+
+        .price {
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            margin-top: 6px;
+
+            padding: 6px 14px;
+
+            border-radius: 18px;
+
+            display: inline-block;
+
+            letter-spacing: .3px;
+
+        }
+
+
+
+        /* PRICE COLORS */
+
+        .free {
+
+            background: linear-gradient(135deg, #7b2ff7, #b388ff);
+
+            color: #fff;
+
+            box-shadow: 0 6px 14px rgba(123, 47, 247, .6);
+
+        }
+
+
+
+        .p49 {
+
+            background: #4facfe;
+
+            color: #fff
+
+        }
+
+
+
+        .p99 {
+
+            background: #00c9a7;
+
+            color: #fff
+
+        }
+
+
+
+        .p199 {
+
+            background: #2ecc71;
+
+            color: #fff
+
+        }
+
+
+
+        .p299 {
+
+            background: #f39c12;
+
+            color: #fff
+
+        }
+
+
+
+        .p499 {
+
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+
+            color: #fff;
+
+        }
+
+
+
+        .p999 {
+
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+
+            color: #000;
+
+            font-weight: 800;
+
+        }
+
+
+
+        /* STATUS */
+
+        .status {
+
+            position: absolute;
+
+            top: 8px;
+
+            right: 10px;
+
+            font-size: 11px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+        }
+
+
+
+        .dot {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #00ff6a;
+
+            box-shadow: 0 0 6px #00ff6a;
+
+        }
+
+
+
+        /* MODAL */
+
+        .modal {
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0, 0, 0, .6);
+
+            display: none;
+
+            justify-content: center;
+
+            align-items: center;
+
+            z-index: 30;
+
+        }
+
+
+
+        .modalBox {
+
+            background: #fff;
+
+            color: #333;
+
+            padding: 22px;
+
+            border-radius: 20px;
+
+            width: 85%;
+
+            max-width: 300px;
+
+            text-align: center;
+
+        }
+
+
+
+        input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border-radius: 25px;
+
+            border: 1px solid #ddd;
+
+            margin-bottom: 10px;
+
+            text-align: center;
+
+        }
+
+
+
+        .enterBtn {
+
+            background: #ff4f81;
+
+            color: #fff;
+
+            border: none;
+
+            padding: 10px 22px;
+
+            border-radius: 25px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+
+        .error {
+
+            color: red;
+
+            font-size: 13px;
+
+            display: none;
+
+        }
+
+    </style>
+
 </head>
+
+
 
 <body>
 
-<button class="backBtn" onclick="window.location.href='home.html'">⬅ Back</button>
-<div class="rain" id="rain"></div>
 
-<div class="page">
- <div class="header">
-  <h2>WELCOME TO SEEZU SURPRISE</h2>
- </div>
- <div class="grid" id="grid"></div>
-</div>
 
-<div class="modal" id="modal">
- <div class="modalBox">
-  <h3 id="modalTitle">🔐 Enter Password</h3>
-  <input type="password" id="pass" placeholder="Password">
-  <button class="enterBtn" onclick="checkPass()">ENTER</button>
-  <div class="error" id="error">Wrong Password</div>
- </div>
-</div>
+    <button class="backBtn" onclick="window.location.href='home.html'">⬅ Back</button>
 
-<script>
-/* rain */
-for(let i=0;i<50;i++){
- let s=document.createElement("span");
- s.style.left=Math.random()*100+"%";
- s.style.animationDuration=(2+Math.random()*3)+"s";
- document.getElementById("rain").appendChild(s);
-}
+    <div class="rain" id="rain"></div>
 
-/* avatar */
-function animeAvatar(){
- return "https://api.dicebear.com/7.x/adventurer/svg?seed="+Math.random();
-}
 
-/* passwords */
-const passwords={
- 1:"PASS1",2:"PASS2",3:"PASS3",4:"PASS4",5:"PASS5",
- 6:"PASS6",7:"PASS7",8:"PASS8",9:"PASS9",10:"PASS10",
-11:"PASS11",12:"PASS12",13:"PASS13",14:"PASS14",15:"PASS15",
-16:"PASS16",17:"PASS17",18:"PASS18",19:"PASS19",20:"PASS20",
-21:"PASS21",22:"PASS22",23:"PASS23",24:"PASS24",25:"PASS25",
-26:"PASS26",27:"PASS27",28:"PASS28",29:"PASS29",30:"PASS30",
-31:"PASS31",32:"PASS32",33:"PASS33",34:"PASS34",35:"PASS35",
-36:"PASS36",37:"PASS37",38:"PASS38",39:"PASS39",40:"PASS40",
-41:"PASS41",42:"PASS42",43:"PASS43",44:"PASS44",45:"PASS45",
-46:"PASS46",47:"PASS47",48:"PASS48",49:"PASS49",50:"PASS50"
-};
 
-/* status data */
-const activeCard = localStorage.getItem("activeCard");
-const lastActive = localStorage.getItem("lastActive");
-const now = Date.now();
+    <div class="page">
 
-/* cards */
-let grid=document.getElementById("grid");
-for(let i=1;i<=50;i++){
- let statusHTML = "";
- if(activeCard==i && lastActive){
-   let diff = now - lastActive;
-   if(diff < 60000){
-     statusHTML = `<div class="status"><span class="dot"></span>WATCHING</div>`;
-   }else{
-     let t = new Date(parseInt(lastActive)).toLocaleTimeString();
-     statusHTML = `<div class="status">LAST SEEN ${t}</div>`;
-   }
- }
- grid.innerHTML+=`
+        <div class="header">
+
+            <h1>🎁 SURPRISE CARD</h1>
+
+            <p>
+
+                Ek chhota sa click… aur dil se nikla ek bada sa surprise 💖
+
+                <br>
+
+                🎖 VIP Members ke liye first 4 cards bilkul FREE
+
+            </p>
+
+        </div>
+
+
+
+        <div class="grid" id="grid"></div>
+
+    </div>
+
+
+
+    <div class="modal" id="modal">
+
+        <div class="modalBox">
+
+            <h3 id="modalTitle">🔐 Enter Password</h3>
+
+            <input type="password" id="pass" placeholder="Password">
+
+            <button class="enterBtn" onclick="checkPass()">ENTER</button>
+
+            <div class="error" id="error">Wrong Password</div>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        /* RAIN */
+
+        for (let i = 0; i < 50; i++) {
+
+            let s = document.createElement("span");
+
+            s.style.left = Math.random() * 100 + "%";
+
+            s.style.animationDuration = (2 + Math.random() * 3) + "s";
+
+            document.getElementById("rain").appendChild(s);
+
+        }
+
+
+
+        /* AVATAR */
+
+        function animeAvatar() {
+
+            return "https://api.dicebear.com/7.x/adventurer/svg?seed=" + Math.random();
+
+        }
+
+
+
+        /* PASSWORDS */
+
+        const passwords = {};
+
+        for (let i = 1; i <= 50; i++) {
+
+            passwords[i] = "PASS" + i;
+
+        }
+
+
+
+        /* PRICE LOGIC */
+
+        function getPrice(i) {
+
+            if (i <= 4) return { text: "FREE • VIP MEMBER 👑", cls: "price free" };
+
+            if (i <= 20) return { text: "₹49 BASIC", cls: "price p49" };
+
+            if (i <= 30) return { text: "₹99 STARTER", cls: "price p99" };
+
+            if (i <= 38) return { text: "₹199 STANDARD", cls: "price p199" };
+
+            if (i <= 44) return { text: "₹299 PLUS", cls: "price p299" };
+
+            if (i <= 48) return { text: "₹499 PREMIUM", cls: "price p499" };
+
+            return { text: "₹999 ULTRA RARE ✨", cls: "price p999" };
+
+        }
+
+
+
+        /* STATUS */
+
+        const activeCard = localStorage.getItem("activeCard");
+
+        const lastActive = localStorage.getItem("lastActive");
+
+        const now = Date.now();
+
+
+
+        /* CARDS */
+
+        let grid = document.getElementById("grid");
+
+        for (let i = 1; i <= 50; i++) {
+
+            let statusHTML = "";
+
+            if (activeCard == i && lastActive) {
+
+                let diff = now - lastActive;
+
+                if (diff < 60000) {
+
+                    statusHTML = `<div class="status"><span class="dot"></span>WATCHING</div>`;
+
+                }
+
+            }
+
+
+
+            let price = getPrice(i);
+
+
+
+            grid.innerHTML += `
+
   <div class="card">
+
    ${statusHTML}
+
    <img class="avatar" src="${animeAvatar()}">
-   <div>Card ${i}</div>
+
+   <div>Surprise Card ${i}</div>
+
+   <div class="${price.cls}">${price.text}</div>
+
    <button class="openBtn" onclick="openCard(${i})">OPEN</button>
+
   </div>`;
-}
 
-let selectedCard=0;
+        }
 
-function openCard(n){
- selectedCard=n;
- document.getElementById("modalTitle").innerText="🔐 Password for Card "+n;
- document.getElementById("pass").value="";
- document.getElementById("error").style.display="none";
- document.getElementById("modal").style.display="flex";
-}
 
-function checkPass(){
- let p=document.getElementById("pass").value;
- if(p===passwords[selectedCard]){
-  localStorage.setItem("activeCard", selectedCard);
-  localStorage.setItem("lastActive", Date.now());
-  window.location.href = selectedCard + ".html";
- }else{
-  document.getElementById("error").style.display="block";
- }
-}
 
-document.getElementById("modal").onclick=e=>{
- if(e.target.id==="modal") e.target.style.display="none";
-};
-</script>
+        let selectedCard = 0;
+
+        function openCard(n) {
+
+            selectedCard = n;
+
+            document.getElementById("modalTitle").innerText = "🔐 Password for Card " + n;
+
+            document.getElementById("pass").value = "";
+
+            document.getElementById("error").style.display = "none";
+
+            document.getElementById("modal").style.display = "flex";
+
+        }
+
+
+
+        function checkPass() {
+
+            if (document.getElementById("pass").value === passwords[selectedCard]) {
+
+                localStorage.setItem("activeCard", selectedCard);
+
+                localStorage.setItem("lastActive", Date.now());
+
+                window.location.href = selectedCard + ".html";
+
+            } else {
+
+                document.getElementById("error").style.display = "block";
+
+            }
+
+        }
+
+
+
+        document.getElementById("modal").onclick = e => {
+
+            if (e.target.id === "modal") e.target.style.display = "none";
+
+        };
+
+    </script>
+
+
 
 </body>
+
+
+
 </html>
